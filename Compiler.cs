@@ -34,7 +34,7 @@ static class Compiler
                 var i = descendants.FindIndex(v => v.attr("id") == node.attr("target"));
                 var j = descendants.IndexOf(node);
                 var n = descendants.Skip(Math.Min(i, j)).Take(Math.Max(i, j) - Math.Min(i, j)).Select(v => v.size()).Sum();
-                return sb.Concat(new ScriptBuilder().EmitJump(opcode, i < j ? -n : n).ToArray());
+                return sb.Concat(new ScriptBuilder().Emit(opcode, BitConverter.GetBytes(i < j ? -n : n)).ToArray());
             default:
                 return sb;
         }

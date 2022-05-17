@@ -134,4 +134,12 @@ static class Assembly
         node.Add(arg1);
         node.Add(main);
     }
+    public static void CALL(XElement node)
+    {
+        var target = node.attr("target") ?? "";
+        var child = new XElement("goto").set("opcode", "CALL_L").set("target", target).compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
+    }
 }
