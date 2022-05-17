@@ -45,8 +45,8 @@ static class Assembly
     }
     public static void TAG(XElement node)
     {
-        var id = node.attr("id") ?? "";
-        new XElement("lazy").set("id", id).to(node);
+        var name = node.attr("name") ?? "";
+        new XElement("lazy").set("id", name).to(node);
     }
     public static void GOTO(XElement node)
     {
