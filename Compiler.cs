@@ -36,10 +36,13 @@ static class Compiler
                 return sb.Concat(node.attr("data").HexToBytes());
             case "goto":
                 var opcode = Enum.Parse<OpCode>(node.attr("opcode")!);
-                var descendants = node.Descendants().ToList();
+                var descendants = node.AncestorsAndSelf().Last().Descendants().Where(v => !v.Elements().Any()).ToList();
                 var i = descendants.FindIndex(v => v.attr("id") == node.attr("target"));
+                Console.Error.WriteLine($"{i}");
                 var j = descendants.IndexOf(node);
+                Console.Error.WriteLine($"{j}");
                 var n = descendants.Skip(Math.Min(i, j)).Take(Math.Max(i, j) - Math.Min(i, j)).Select(v => v.size()).Sum();
+                Console.Error.WriteLine($"{n}");
                 return sb.Concat(new ScriptBuilder().EmitJump(opcode, i < j ? -n : n).ToArray());
             default:
                 return sb;
@@ -52,7 +55,7 @@ static class Compiler
             case "frag":
                 return node.attr("data").HexToBytes().Length;
             case "goto":
-                return 6;
+                return 5;
             default:
                 return 0;
         }
