@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Xml.Linq;
 using Neo;
 using Neo.Cryptography.ECC;
+using Neo.SmartContract;
 using Neo.VM;
 using Neo.Wallets;
 
@@ -97,10 +98,40 @@ static class Assembly
         node.AddFirst(child);
         node.Add(tag);
     }
-    // public static void ELSE(XElement node)
-    // {
-    //     Guid end = Guid.NewGuid();
-    //     node.Add(new XElement(Compiler.lazy).attr("id", end));
-    //     node.AddFirst(new XElement(ns + "goto").attr("target", $"../lazy[@id='{end}']").attr("cond", "if"));
-    // }
+    public static void IF(XElement node)
+    {
+        node.RemoveAttributes();
+        node.Name = ns + "skip";
+        node.set("cond", "ifnot").compile();
+    }
+    public static void UNLESS(XElement node)
+    {
+        node.RemoveAttributes();
+        node.Name = ns + "skip";
+        node.set("cond", "if").compile();
+    }
+    public static void SYSCALL(XElement node)
+    {
+        var name = node.attr("name");
+        var child = new XElement("frag").set("data", new ScriptBuilder().EmitSysCall(new InteropDescriptor() { Name = name }.Hash).ToArray().ToHexString()).compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
+    }
+    public static void CONTRACTCALL(XElement node)
+    {
+        var flag = Enum.Parse<CallFlags>(node.attr("flag") ?? "All");
+        var method = node.attr("method") ?? "";
+        var scripthash = UInt160.Parse(node.attr("hash"));
+        var arg3 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(flag).ToArray().ToHexString()).compile();
+        var arg2 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(method).ToArray().ToHexString()).compile();
+        var arg1 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(scripthash).ToArray().ToHexString()).compile();
+        var main = new XElement(ns + "syscall").set("name", "System.Contract.Call").compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(arg3);
+        node.Add(arg2);
+        node.Add(arg1);
+        node.Add(main);
+    }
 }
