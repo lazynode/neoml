@@ -6,52 +6,86 @@ namespace neoml.language;
 
 static class Assembly
 {
+    public static XNamespace ns = nameof(Assembly);
     public static void LAZY(XElement node) { }
     public static void INSTRUCTION(XElement node)
     {
         var opcode = Enum.Parse<OpCode>((node.attr("opcode") ?? "NOP").ToUpper());
         var operand = node.attr("operand")?.HexToBytes();
-        new XElement("frag").set("data", new ScriptBuilder().Emit(opcode, operand).ToArray().ToHexString()).to(node);
+        var child = new XElement("frag").set("data", new ScriptBuilder().Emit(opcode, operand).ToArray().ToHexString()).compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
     }
     public static void LITERAL(XElement node)
     {
         var type = node.attr("type") ?? "null";
         var val = node.attr("val") ?? "";
+        var child = new XElement("frag");
         switch (type)
         {
             case "int":
-                new XElement("frag").set("data", new ScriptBuilder().EmitPush(BigInteger.Parse(val)).ToArray().ToHexString()).to(node);
+                child.set("data", new ScriptBuilder().EmitPush(BigInteger.Parse(val)).ToArray().ToHexString());
                 break;
             case "string":
-                new XElement("frag").set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString()).to(node);
+                child.set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString());
                 break;
             case "bytes":
-                new XElement("frag").set("data", new ScriptBuilder().EmitPush(val.HexToBytes()).ToArray().ToHexString()).to(node);
+                child.set("data", new ScriptBuilder().EmitPush(val.HexToBytes()).ToArray().ToHexString());
                 break;
             case "bool":
-                new XElement("frag").set("data", new ScriptBuilder().EmitPush(bool.Parse(val)).ToArray().ToHexString()).to(node);
+                child.set("data", new ScriptBuilder().EmitPush(bool.Parse(val)).ToArray().ToHexString());
                 break;
             case "null":
-                new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString()).to(node);
+                child.set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString());
                 break;
             default:
                 throw new Exception();
         }
-
+        child.compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
     }
     public static void NOP(XElement node)
     {
-        new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.NOP).ToArray().ToHexString()).to(node);
+        var child = new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.NOP).ToArray().ToHexString()).compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
     }
     public static void TAG(XElement node)
     {
         var name = node.attr("name") ?? "";
-        new XElement("lazy").set("id", name).to(node);
+        var child = new XElement("lazy").set("id", name).compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
     }
     public static void GOTO(XElement node)
     {
         var cond = node.attr("cond") ?? "";
         var target = node.attr("target") ?? "";
-        new XElement("goto").set("opcode", Enum.Parse<OpCode>($"JMP{cond.ToUpper()}_L").ToString()).set("target", target).to(node);
+        var child = new XElement("goto").set("opcode", Enum.Parse<OpCode>($"JMP{cond.ToUpper()}_L").ToString()).set("target", target).compile();
+        node.RemoveAll();
+        node.Name = Compiler.LAZY;
+        node.Add(child);
     }
+    public static void SKIP(XElement node)
+    {
+        var cond = node.attr("cond") ?? "";
+        Guid end = Guid.NewGuid();
+        var tag = new XElement("lazy").set("id", end).compile();
+        var child = new XElement(ns + "goto").set("target", end).set("cond", cond).compile();
+        node.RemoveAttributes();
+        node.Name = Compiler.LAZY;
+        node.AddFirst(child);
+        node.Add(tag);
+    }
+    // public static void ELSE(XElement node)
+    // {
+    //     Guid end = Guid.NewGuid();
+    //     node.Add(new XElement(Compiler.lazy).attr("id", end));
+    //     node.AddFirst(new XElement(ns + "goto").attr("target", $"../lazy[@id='{end}']").attr("cond", "if"));
+    // }
 }
