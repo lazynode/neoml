@@ -1,0 +1,3 @@
+<lazy xmlns="Assembly" bytecode="DA1IZWxsbywgd29ybGQh">
+    <literal type="string" val="Hello, world!" />
+</lazy>
