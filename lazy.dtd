@@ -1,4 +1,5 @@
-<!ELEMENT lazy (instruction,literal,nop,tag,goto,skip,if,unless,syscall,contractcall,call,dowhile,while)*>
+<!ELEMENT lazy (literal|nop|tag|goto|skip|if|unless|contractcall|call|dowhile|while|syscall|instruction)*>
+<!ATTLIST lazy xmlns (Assembly) #REQUIRED>
 
 <!ELEMENT literal (#PCDATA)>
 <!ATTLIST literal type (int|string|bytes|bool|null) #REQUIRED>
@@ -20,9 +21,6 @@
 
 <!ELEMENT unless EMPTY>
 
-<!ELEMENT syscall (#PCDATA)>
-<!ATTLIST syscall name CDATA #REQUIRED> <!-- TODO restrict syscall range -->
-
 <!ELEMENT contractcall (#PCDATA)>
 <!ATTLIST contractcall flag (None|ReadStates|WriteStates|States|AllowCall|ReadOnly|AllowNotify|All) "All">
 <!ATTLIST contractcall method CDATA #REQUIRED>
@@ -34,6 +32,9 @@
 <!ELEMENT dowhile EMPTY>
 
 <!ELEMENT while EMPTY>
+
+<!ELEMENT syscall (#PCDATA)>
+<!ATTLIST syscall name (System.Contract.Call|System.Contract.GetCallFlags|System.Contract.CreateStandardAccount|System.Contract.CreateMultisigAccount|System.Crypto.CheckSig|System.Crypto.CheckMultisig|System.Iterator.Next|System.Iterator.Values|System.Runtime.Platform|System.Runtime.GetTrigger|System.Runtime.GetTime|System.Runtime.GetScriptContainer|System.Runtime.GetExecutingScriptHash|System.Runtime.GetCallingScriptHash|System.Runtime.GetEntryScriptHash|System.Runtime.CheckWitness|System.Runtime.GetInvocationCounter|System.Runtime.Log|System.Runtime.GetNotifications|System.Runtime.GasLeft|System.Runtime.BurnGas|System.Runtime.GetNetwork|System.Runtime.GetRandom|System.Storage.GetContext|System.Storage.GetReadOnlyContext|System.StorageContext.AsReadOnly|System.Storage.Get|System.Storage.Find|System.Storage.Put|System.Storage.Delete) #REQUIRED>
 
 <!ELEMENT instruction (#PCDATA)>
 <!ATTLIST instruction opcode (callt|append|reverseitems|setitem|values|pushdata4|cat|convert|left|memcpy|right|substr|call|calll|calla|newarray|newarrayt|newstruct|pack|pushdata2|throw|unpack|newbuffer|haskey|initslot|pickitem|equal|notequal|clear|clearitems|initsslot|keys|newarray0|newstruct0|popitem|remove|reversen|roll|xdrop|add|and|booland|boolor|div|ge|gt|le|lt|max|min|mod|mul|newmap|numequal|numnotequal|or|pushdata1|shl|shr|sub|within|xor|abs|dec|endfinally|endtry|endtryl|inc|invert|negate|not|nz|pusha|pushint128|pushint256|sign|size|try|tryl|depth|drop|dup|isnull|istype|jmp|jmpl|jmpeq|jmpeql|jmpge|jmpgel|jmpgt|jmpgtl|jmpif|jmpifl|jmpifnot|jmpifnotl|jmple|jmplel|jmplt|jmpltl|jmpne|jmpne_l|ldarg|ldarg0|ldarg1|ldarg2|ldarg3|ldarg4|ldarg5|ldarg6|ldloc|ldloc0|ldloc1|ldloc2|ldloc3|ldloc4|ldloc5|ldloc6|ldsfld|ldsfld0|ldsfld1|ldsfld2|ldsfld3|ldsfld4|ldsfld5|ldsfld6|nip|over|pick|reverse3|reverse4|rot|starg|starg0|starg1|starg2|starg3|starg4|starg5|starg6|stloc|stloc0|stloc1|stloc2|stloc3|stloc4|stloc5|stloc6|stsfld|stsfld0|stsfld1|stsfld2|stsfld3|stsfld4|stsfld5|stsfld6|swap|tuck|assert|nop|push0|push1|push10|push11|push12|push13|push14|push15|push16|push2|push3|push4|push5|push6|push7|push8|push9|pushint16|pushint32|pushint64|pushint8|pushm1|pushnull|abort|ret|syscall) #REQUIRED>
