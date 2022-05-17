@@ -2,6 +2,8 @@ using System.Numerics;
 using System.Xml.Linq;
 using Neo;
 using Neo.VM;
+using Neo.Wallets;
+
 namespace neoml.language;
 
 static class Assembly
@@ -33,6 +35,18 @@ static class Assembly
                 break;
             case "null":
                 new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString()).to(node);
+                break;
+            case "hash160":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush((UInt160.Parse(val))).ToArray().ToHexString()).to(node);
+                break;
+            case "hash256":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush((UInt256.Parse(val))).ToArray().ToHexString()).to(node);
+                break;
+            case "address":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush(val.ToScriptHash(ProtocolSettings.Default.AddressVersion)).ToArray().ToHexString()).to(node);
+                break;
+            case "publickkey":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush(((Neo.Cryptography.ECC.ECPoint.Parse(val, Neo.Cryptography.ECC.ECCurve.Secp256r1)).EncodePoint(true))).ToArray().ToHexString()).to(node);
                 break;
             default:
                 throw new Exception();
