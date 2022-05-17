@@ -91,7 +91,7 @@ static class Assembly
     {
         var cond = node.attr("cond") ?? "";
         Guid end = Guid.NewGuid();
-        var tag = new XElement("lazy").set("id", end).compile();
+        var tag = new XElement(ns + "tag").set("name", end).compile();
         var child = new XElement(ns + "goto").set("target", end).set("cond", cond).compile();
         node.RemoveAttributes();
         node.Name = Compiler.LAZY;
@@ -141,5 +141,28 @@ static class Assembly
         node.RemoveAll();
         node.Name = Compiler.LAZY;
         node.Add(child);
+    }
+    public static void DOWHILE(XElement node)
+    {
+        Guid start = Guid.NewGuid();
+        var tag = new XElement(ns + "tag").set("id", start).compile();
+        var child = new XElement(ns + "goto").set("target", start).set("cond", "if").compile();
+        node.RemoveAttributes();
+        node.Name = Compiler.LAZY;
+        node.AddFirst(tag);
+        node.Add(child);
+    }
+    public static void WHILE(XElement node)
+    {
+        Guid start = Guid.NewGuid();
+        Guid stop = Guid.NewGuid();
+        var tagstart = new XElement(ns + "tag").set("id", start).compile();
+        var tagstop = new XElement(ns + "tag").set("id", stop).compile();
+        var gotostart = new XElement(ns + "goto").set("target", start).set("cond", "if");
+        var gotostop = new XElement(ns + "goto").set("target", stop);
+        node.AddFirst(tagstart);
+        node.Add(tagstop);
+        node.AddFirst(gotostop);
+        node.Add(gotostart);
     }
 }
