@@ -2,6 +2,9 @@
 using System.Reflection;
 using Neo;
 using Neo.VM;
+using Neo.IO;
+using Neo.SmartContract;
+using Neo.IO.Json;
 
 namespace neoml;
 static class Compiler
@@ -15,6 +18,48 @@ static class Compiler
         return node;
     }
     public static byte[] finalize(this XElement node) => node.Descendants().Where(v => !v.Elements().Any()).Aggregate(Enumerable.Empty<byte>(), (sb, v) => sb.emit(v)).ToArray();
+    public static byte[] nef(this byte[] script)
+    {
+        NefFile file = new()
+        {
+            Compiler = "neoml",
+            Source = "",
+            Tokens = new MethodToken[] { }, // TODO
+            Script = script,
+        };
+        file.CheckSum = NefFile.ComputeChecksum(file);
+        return file.ToArray();
+    }
+    public static string manifest(this XElement node)
+    {
+        JObject obj = new()
+        {
+            // ["name"] = ContractName,
+            // ["groups"] = new JArray(),
+            // ["features"] = new JObject(),
+            // ["supportedstandards"] = supportedStandards.OrderBy(p => p).Select(p => (JString)p).ToArray(),
+            // ["abi"] = new JObject
+            // {
+            //     ["methods"] = methodsExported.Select(p => new JObject
+            //     {
+            //         ["name"] = p.Name,
+            //         ["offset"] = GetAbiOffset(p.Symbol),
+            //         ["safe"] = p.Safe,
+            //         ["returntype"] = p.ReturnType,
+            //         ["parameters"] = p.Parameters.Select(p => p.ToJson()).ToArray()
+            //     }).ToArray(),
+            //     ["events"] = eventsExported.Select(p => new JObject
+            //     {
+            //         ["name"] = p.Name,
+            //         ["parameters"] = p.Parameters.Select(p => p.ToJson()).ToArray()
+            //     }).ToArray()
+            // },
+            // ["permissions"] = permissions.ToJson(),
+            // ["trusts"] = trusts.Contains("*") ? "*" : trusts.OrderBy(p => p.Length).ThenBy(p => p).Select(u => new JString(u)).ToArray(),
+            // ["extra"] = manifestExtra
+        };
+        return obj.ToString();
+    }
     public static XElement set(this XElement node, XName name, object val)
     {
         node.SetAttributeValue(name, val);
