@@ -1,17 +1,40 @@
-<!ELEMENT lazy (a:instruction,a:literal,a:nop,a:tag,a:goto)*>
-<!ELEMENT a:instruction (#PCDATA)>
-<!ELEMENT a:literal (#PCDATA)>
-<!ELEMENT a:nop EMPTY>
-<!ELEMENT a:tag (#PCDATA)>
-<!ELEMENT a:goto (#PCDATA)>
+<!ELEMENT lazy (instruction,literal,nop,tag,goto,skip,if,unless,syscall,contractcall,call,dowhile,while)*>
 
-<!ATTLIST a:instruction opcode (callt|append|reverseitems|setitem|values|pushdata4|cat|convert|left|memcpy|right|substr|call|calll|calla|newarray|newarrayt|newstruct|pack|pushdata2|throw|unpack|newbuffer|haskey|initslot|pickitem|equal|notequal|clear|clearitems|initsslot|keys|newarray0|newstruct0|popitem|remove|reversen|roll|xdrop|add|and|booland|boolor|div|ge|gt|le|lt|max|min|mod|mul|newmap|numequal|numnotequal|or|pushdata1|shl|shr|sub|within|xor|abs|dec|endfinally|endtry|endtryl|inc|invert|negate|not|nz|pusha|pushint128|pushint256|sign|size|try|tryl|depth|drop|dup|isnull|istype|jmp|jmpl|jmpeq|jmpeql|jmpge|jmpgel|jmpgt|jmpgtl|jmpif|jmpifl|jmpifnot|jmpifnotl|jmple|jmplel|jmplt|jmpltl|jmpne|jmpne_l|ldarg|ldarg0|ldarg1|ldarg2|ldarg3|ldarg4|ldarg5|ldarg6|ldloc|ldloc0|ldloc1|ldloc2|ldloc3|ldloc4|ldloc5|ldloc6|ldsfld|ldsfld0|ldsfld1|ldsfld2|ldsfld3|ldsfld4|ldsfld5|ldsfld6|nip|over|pick|reverse3|reverse4|rot|starg|starg0|starg1|starg2|starg3|starg4|starg5|starg6|stloc|stloc0|stloc1|stloc2|stloc3|stloc4|stloc5|stloc6|stsfld|stsfld0|stsfld1|stsfld2|stsfld3|stsfld4|stsfld5|stsfld6|swap|tuck|assert|nop|push0|push1|push10|push11|push12|push13|push14|push15|push16|push2|push3|push4|push5|push6|push7|push8|push9|pushint16|pushint32|pushint64|pushint8|pushm1|pushnull|abort|ret|syscall) #REQUIRED>
-<!ATTLIST a:instruction operand CDATA #IMPLIED>
+<!ELEMENT literal (#PCDATA)>
+<!ATTLIST literal type (int|string|bytes|bool|null) #REQUIRED>
+<!ATTLIST literal val CDATA #IMPLIED>
 
-<!ATTLIST a:literal type (int|string|bytes|bool|null) #REQUIRED>
-<!ATTLIST a:literal val CDATA #IMPLIED>
+<!ELEMENT nop EMPTY>
 
-<!ATTLIST a:tag id ID #REQUIRED>
+<!ELEMENT tag (#PCDATA)>
+<!ATTLIST tag id ID #REQUIRED>
 
-<!ATTLIST a:goto cond CDATA "">
-<!ATTLIST a:goto target IDREF #REQUIRED>
+<!ELEMENT goto (#PCDATA)>
+<!ATTLIST goto cond (eq|ne|le|lt|ge|gt|if|ifnot) "">
+<!ATTLIST goto target IDREF #REQUIRED>
+
+<!ELEMENT skip (#PCDATA)>
+<!ATTLIST skip cond (eq|ne|le|lt|ge|gt|if|ifnot) "">
+
+<!ELEMENT if EMPTY>
+
+<!ELEMENT unless EMPTY>
+
+<!ELEMENT syscall (#PCDATA)>
+<!ATTLIST syscall name CDATA #REQUIRED> <!-- TODO restrict syscall range -->
+
+<!ELEMENT contractcall (#PCDATA)>
+<!ATTLIST contractcall flag (None|ReadStates|WriteStates|States|AllowCall|ReadOnly|AllowNotify|All) "All">
+<!ATTLIST contractcall method CDATA #REQUIRED>
+<!ATTLIST contractcall hash CDATA #REQUIRED>
+
+<!ELEMENT call (#PCDATA)>
+<!ATTLIST call target IDREF #REQUIRED>
+
+<!ELEMENT dowhile EMPTY>
+
+<!ELEMENT while EMPTY>
+
+<!ELEMENT instruction (#PCDATA)>
+<!ATTLIST instruction opcode (callt|append|reverseitems|setitem|values|pushdata4|cat|convert|left|memcpy|right|substr|call|calll|calla|newarray|newarrayt|newstruct|pack|pushdata2|throw|unpack|newbuffer|haskey|initslot|pickitem|equal|notequal|clear|clearitems|initsslot|keys|newarray0|newstruct0|popitem|remove|reversen|roll|xdrop|add|and|booland|boolor|div|ge|gt|le|lt|max|min|mod|mul|newmap|numequal|numnotequal|or|pushdata1|shl|shr|sub|within|xor|abs|dec|endfinally|endtry|endtryl|inc|invert|negate|not|nz|pusha|pushint128|pushint256|sign|size|try|tryl|depth|drop|dup|isnull|istype|jmp|jmpl|jmpeq|jmpeql|jmpge|jmpgel|jmpgt|jmpgtl|jmpif|jmpifl|jmpifnot|jmpifnotl|jmple|jmplel|jmplt|jmpltl|jmpne|jmpne_l|ldarg|ldarg0|ldarg1|ldarg2|ldarg3|ldarg4|ldarg5|ldarg6|ldloc|ldloc0|ldloc1|ldloc2|ldloc3|ldloc4|ldloc5|ldloc6|ldsfld|ldsfld0|ldsfld1|ldsfld2|ldsfld3|ldsfld4|ldsfld5|ldsfld6|nip|over|pick|reverse3|reverse4|rot|starg|starg0|starg1|starg2|starg3|starg4|starg5|starg6|stloc|stloc0|stloc1|stloc2|stloc3|stloc4|stloc5|stloc6|stsfld|stsfld0|stsfld1|stsfld2|stsfld3|stsfld4|stsfld5|stsfld6|swap|tuck|assert|nop|push0|push1|push10|push11|push12|push13|push14|push15|push16|push2|push3|push4|push5|push6|push7|push8|push9|pushint16|pushint32|pushint64|pushint8|pushm1|pushnull|abort|ret|syscall) #REQUIRED>
+<!ATTLIST instruction operand CDATA #IMPLIED>
