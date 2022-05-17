@@ -1,7 +1,10 @@
 using System.Numerics;
 using System.Xml.Linq;
 using Neo;
+using Neo.Cryptography.ECC;
 using Neo.VM;
+using Neo.Wallets;
+
 namespace neoml.language;
 
 static class Assembly
@@ -38,6 +41,18 @@ static class Assembly
                 break;
             case "null":
                 child.set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString());
+                break;
+            case "hash160":
+                child.set("data", new ScriptBuilder().EmitPush(UInt160.Parse(val)).ToArray().ToHexString());
+                break;
+            case "hash256":
+                child.set("data", new ScriptBuilder().EmitPush(UInt256.Parse(val)).ToArray().ToHexString());
+                break;
+            case "address":
+                child.set("data", new ScriptBuilder().EmitPush(val.ToScriptHash(ProtocolSettings.Default.AddressVersion)).ToArray().ToHexString());
+                break;
+            case "publickey":
+                child.set("data", new ScriptBuilder().EmitPush(((ECPoint.Parse(val, ECCurve.Secp256r1)).EncodePoint(true))).ToArray().ToHexString());
                 break;
             default:
                 throw new Exception();
