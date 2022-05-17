@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 using System.Reflection;
 using Neo;
+using Neo.VM;
+
 namespace neoml;
 static class Compiler
 {
@@ -32,11 +34,27 @@ static class Compiler
         {
             case "frag":
                 return sb.Concat(node.attr("data").HexToBytes());
-            case "jump":
-                // todo
-                throw new Exception();
+            case "goto":
+                var opcode = Enum.Parse<OpCode>(node.attr("opcode")!);
+                var descendants = node.Descendants().ToList();
+                var i = descendants.FindIndex(v => v.attr("id") == node.attr("target"));
+                var j = descendants.IndexOf(node);
+                var n = descendants.Skip(Math.Min(i, j)).Take(Math.Max(i, j) - Math.Min(i, j)).Select(v => v.size()).Sum();
+                return sb.Concat(new ScriptBuilder().EmitJump(opcode, i < j ? -n : n).ToArray());
             default:
                 return sb;
+        }
+    }
+    public static int size(this XElement node)
+    {
+        switch (node.Name.LocalName)
+        {
+            case "frag":
+                return node.attr("data").HexToBytes().Length;
+            case "goto":
+                return 6;
+            default:
+                return 0;
         }
     }
 }

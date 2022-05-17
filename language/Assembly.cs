@@ -13,32 +13,45 @@ static class Assembly
         var operand = node.attr("operand")?.HexToBytes();
         new XElement("frag").set("data", new ScriptBuilder().Emit(opcode, operand).ToArray().ToHexString()).to(node);
     }
-    public static void INT(XElement node)
+    public static void LITERAL(XElement node)
     {
-        var val = BigInteger.Parse(node.attr("val") ?? "0");
-        new XElement("frag").set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString()).to(node);
-    }
-    public static void STRING(XElement node)
-    {
+        var type = node.attr("type") ?? "null";
         var val = node.attr("val") ?? "";
-        new XElement("frag").set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString()).to(node);
-    }
-    public static void BYTES(XElement node)
-    {
-        var val = (node.attr("val") ?? "").HexToBytes();
-        new XElement("frag").set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString()).to(node);
-    }
-    public static void BOOL(XElement node)
-    {
-        var val = bool.Parse(node.attr("val") ?? "false");
-        new XElement("frag").set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString()).to(node);
-    }
-    public static void NULL(XElement node)
-    {
-        new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString()).to(node);
+        switch (type)
+        {
+            case "int":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush(BigInteger.Parse(val)).ToArray().ToHexString()).to(node);
+                break;
+            case "string":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString()).to(node);
+                break;
+            case "bytes":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush(val.HexToBytes()).ToArray().ToHexString()).to(node);
+                break;
+            case "bool":
+                new XElement("frag").set("data", new ScriptBuilder().EmitPush(bool.Parse(val)).ToArray().ToHexString()).to(node);
+                break;
+            case "null":
+                new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString()).to(node);
+                break;
+            default:
+                throw new Exception();
+        }
+
     }
     public static void NOP(XElement node)
     {
         new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.NOP).ToArray().ToHexString()).to(node);
+    }
+    public static void TAG(XElement node)
+    {
+        var id = node.attr("id") ?? "";
+        new XElement("lazy").set("id", id).to(node);
+    }
+    public static void GOTO(XElement node)
+    {
+        var cond = node.attr("cond") ?? "";
+        var target = node.attr("target") ?? "";
+        new XElement("goto").set("opcode", Enum.Parse<OpCode>($"JMP{cond.ToUpper()}_L").ToString()).set("target", target).to(node);
     }
 }
