@@ -12,7 +12,10 @@ static class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
     public static void LAZY(XElement node) {}
-    public static void FUNC(XElement node) => node.Name = "func";
+    public static void FUNC(XElement node) {
+        node.AddFirst(new XElement("lazy"));
+        node.Name = "func";
+    }
     public static void ARG(XElement node) => node.Name = "arg";
     public static void EVT(XElement node) => node.Name = "evt";
     public static void META(XElement node) => node.Name = "meta";

@@ -13,7 +13,7 @@ static class Output
     public static string meta(this XElement node, string key, string def = "") => node.leaves().Where(v => v.Name.LocalName == "meta").SingleOrDefault()?.attr(key) ?? def;
     public static JString[] supportedstandards(this XElement node) => node.leaves().Where(v => v.Name.LocalName == "std").Select(v => (JString)v.attr("std")!).ToArray();
     public static JObject abi(this XElement node) => new JObject { ["methods"] = node.Descendants().Where(v => v.Name.LocalName == "func").Select(v => v.func()).ToArray(), ["events"] = node.Descendants().Where(v => v.Name.LocalName == "evt").Select(v => v.evt()).ToArray() };
-    public static JObject func(this XElement node) => new JObject { ["name"] = node.attr("name"), ["offset"] = node.position(), ["safe"] = bool.Parse(node.attr("safe") ?? "false"), ["returntype"] = node.attr("return")!.pipe(v => TYPEFIX[v]), ["parameters"] = node.parameters() };
+    public static JObject func(this XElement node) => new JObject { ["name"] = node.attr("name"), ["offset"] = node.Descendants().First().position(), ["safe"] = bool.Parse(node.attr("safe") ?? "false"), ["returntype"] = node.attr("return")!.pipe(v => TYPEFIX[v]), ["parameters"] = node.parameters() };
     public static JObject evt(this XElement node) => new JObject { ["name"] = node.attr("name"), ["parameters"] = node.parameters() };
     public static int position(this XElement node) => node.root().leaves().TakeWhile(v => v != node).Select(v => v.size()).Sum();
     public static XElement root(this XElement node) => node.Parent is null ? node : node.Parent.root();
