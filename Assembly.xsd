@@ -4,11 +4,42 @@
 
   <element name='lazy'>
     <complexType>
-      <sequence minOccurs="0" maxOccurs="unbounded">
-        <group ref="a:anyElement" />
+      <sequence>
+        <element ref='a:meta' minOccurs="0" />
+        <element ref='a:std' minOccurs="0" maxOccurs="unbounded" />
+        <element ref='a:evt' minOccurs="0" maxOccurs="unbounded" />
+        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
       </sequence>
       <attribute name='bytecode' type='string' use='optional' />
       <attribute name='result' type='string' use='optional' />
+    </complexType>
+  </element>
+
+  <element name='func'>
+    <complexType>
+      <sequence>
+        <element ref='a:arg' minOccurs="0" maxOccurs="unbounded" />
+        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+      <attribute name='name' type='Name' use='required' />
+      <attribute name='safe' type='a:boolLiteral' use='optional' />
+      <attribute name='return' type='a:fullLiteralType' use='optional' />
+    </complexType>
+  </element>
+
+  <element name='evt'>
+    <complexType>
+      <sequence minOccurs="0" maxOccurs="unbounded">
+        <element ref="a:arg" />
+      </sequence>
+      <attribute name='name' type='Name' use='required' />
+    </complexType>
+  </element>
+
+  <element name="arg">
+    <complexType>
+      <attribute name='name' type='Name' use='required' />
+      <attribute name='type' type='a:fullLiteralType' use='required' />
     </complexType>
   </element>
 
@@ -75,6 +106,29 @@
     </complexType>
   </element>
 
+  <element name='meta'>
+    <complexType>
+      <simpleContent>
+        <extension base="string">
+          <attribute name='compiler' type='a:MaxLen64String' use='optional' default="neoml" />
+          <attribute name='src' type='string' use='optional' default="neo.org" />
+          <attribute name='name' type='string' use='required' />
+        </extension>
+      </simpleContent>
+    </complexType>
+  </element>
+
+  <element name='std'>
+    <complexType>
+      <annotation>
+        <documentation>
+          Supported Standard: NEP-17 NEP-11 ...
+        </documentation>
+      </annotation>
+      <attribute name='std' type='a:nepStd' use='required' />
+    </complexType>
+  </element>
+
   <group name="anyElement">
     <choice>
       <element ref='a:lazy' />
@@ -91,6 +145,7 @@
       <element ref='a:while' />
       <element ref='a:syscall' />
       <element ref='a:instruction' />
+      <element ref='a:func' />
     </choice>
   </group>
   <complexType name="empty" />
@@ -99,6 +154,11 @@
       <group ref="a:anyElement" />
     </sequence>
   </complexType>
+  <simpleType name="MaxLen64String">
+    <restriction base="string">
+      <maxLength value="64" />
+    </restriction>
+  </simpleType>
   <simpleType name='literalType'>
     <restriction base='string'>
       <enumeration value='int' />
@@ -111,6 +171,19 @@
       <enumeration value='address' />
       <enumeration value='publickey' />
     </restriction>
+  </simpleType>
+  <simpleType name='unsupportedLiteralType'>
+    <restriction base='string'>
+      <enumeration value='any' />
+      <enumeration value='signature' />
+      <enumeration value='array' />
+      <enumeration value='map' />
+      <enumeration value='interopinterface' />
+      <enumeration value='void' />
+    </restriction>
+  </simpleType>
+  <simpleType name='fullLiteralType'>
+    <union memberTypes="a:literalType a:unsupportedLiteralType" />
   </simpleType>
   <simpleType name='callFlagType'>
     <restriction base='string'>
@@ -151,6 +224,15 @@
       <enumeration value='true' />
       <enumeration value='false' />
     </restriction>
+  </simpleType>
+  <simpleType name='someNepStd'>
+    <restriction base='string'>
+      <enumeration value='NEP-11' />
+      <enumeration value='NEP-17' />
+    </restriction>
+  </simpleType>
+  <simpleType name='nepStd'>
+    <union memberTypes="a:someNepStd string" />
   </simpleType>
   <simpleType name="predefinedHash160Literal">
     <annotation>
