@@ -1,0 +1,4 @@
+<?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
+<lazy xmlns="Assembly" bytecode="DA1IZWxsbywgd29ybGQh" result='{"type":"ByteString","value":"SGVsbG8sIHdvcmxkIQ=="}'>
+    <literal type="string" val="Hello, world!" />
+</lazy>
