@@ -12,13 +12,30 @@ static class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
     public static void LAZY(XElement node) { }
+    public static void META(XElement node)
+    {
+        var compiler = node.attr("compiler");
+        var child = new XElement("meta").set("compiler", compiler).compile();
+        child.Value = node.Value;
+        node.RemoveAttributes();
+        node.Name = "lazy";
+        node.Add(child);
+    }
+    public static void STD(XElement node)
+    {
+        var std = node.attr("std");
+        var child = new XElement("std").set("std", std).compile();
+        node.RemoveAll();
+        node.Name = "lazy";
+        node.Add(child);
+    }
     public static void INSTRUCTION(XElement node)
     {
         var opcode = Enum.Parse<OpCode>((node.attr("opcode") ?? "NOP").ToUpper());
         var operand = node.attr("operand")?.HexToBytes();
         var child = new XElement("frag").set("data", new ScriptBuilder().Emit(opcode, operand).ToArray().ToHexString()).compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void LITERAL(XElement node)
@@ -60,14 +77,14 @@ static class Assembly
         }
         child.compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void NOP(XElement node)
     {
         var child = new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.NOP).ToArray().ToHexString()).compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void TAG(XElement node)
@@ -75,7 +92,7 @@ static class Assembly
         var name = node.attr("name") ?? "";
         var child = new XElement("lazy").set("id", name).compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void GOTO(XElement node)
@@ -84,7 +101,7 @@ static class Assembly
         var target = node.attr("target") ?? "";
         var child = new XElement("goto").set("opcode", Enum.Parse<OpCode>($"JMP{cond.ToUpper()}_L").ToString()).set("target", target).compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void SKIP(XElement node)
@@ -94,7 +111,7 @@ static class Assembly
         var tag = new XElement(ns + "tag").set("name", end).compile();
         var child = new XElement(ns + "goto").set("target", end).set("cond", cond).compile();
         node.RemoveAttributes();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.AddFirst(child);
         node.Add(tag);
     }
@@ -115,7 +132,7 @@ static class Assembly
         var name = node.attr("name");
         var child = new XElement("frag").set("data", new ScriptBuilder().EmitSysCall(new InteropDescriptor() { Name = name }.Hash).ToArray().ToHexString()).compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void CONTRACTCALL(XElement node)
@@ -128,7 +145,7 @@ static class Assembly
         var arg1 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(scripthash).ToArray().ToHexString()).compile();
         var main = new XElement(ns + "syscall").set("name", "System.Contract.Call").compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(arg3);
         node.Add(arg2);
         node.Add(arg1);
@@ -139,7 +156,7 @@ static class Assembly
         var target = node.attr("target") ?? "";
         var child = new XElement("goto").set("opcode", "CALL_L").set("target", target).compile();
         node.RemoveAll();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.Add(child);
     }
     public static void DOWHILE(XElement node)
@@ -148,7 +165,7 @@ static class Assembly
         var tag = new XElement(ns + "tag").set("id", start).compile();
         var child = new XElement(ns + "goto").set("target", start).set("cond", "if").compile();
         node.RemoveAttributes();
-        node.Name = Compiler.LAZY;
+        node.Name = "lazy";
         node.AddFirst(tag);
         node.Add(child);
     }
