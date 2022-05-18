@@ -17,6 +17,7 @@ public class Test
     [InlineData("7.call")]
     [InlineData("8.while")]
     [InlineData("9.dowhile")]
+    [InlineData("a.function")]
     public void TestOutput(string filename) => Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.GetDirectories("examples").First().GetFiles(filename).Select(v => XElement.Load(v.OpenRead())).ToList().ForEach(v =>
     {
         using ApplicationEngine engine = ApplicationEngine.Run(v.finalize(), new NeoSystem(ProtocolSettings.Default, null, null).GetSnapshot().CreateSnapshot(), container: null, settings: ProtocolSettings.Default, gas: ApplicationEngine.TestModeGas);

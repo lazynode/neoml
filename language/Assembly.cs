@@ -11,43 +11,12 @@ namespace neoml.language;
 static class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
-    public static void LAZY(XElement node) { }
-    public static void FUNC(XElement node) {
-        var name = node.attr("name");
-        var safe = node.attr("safe");
-        var ret = node.attr("return");
-        var child = new XElement("func").set("name", name).set("safe", safe).set("return", ret);
-        child.Value = node.Value;
-        node.RemoveAttributes();
-        node.Name = "lazy";
-        node.AddFirst(child);
-        node.Name = ns + "lazy";
-    }
-    public static void ARG(XElement node) { 
-        node.Name = "lazy";
-    }
-    public static void EVT(XElement node) { 
-        node.Name = "lazy";
-    }
-    public static void META(XElement node)
-    {
-        var compiler = node.attr("compiler");
-        var name = node.attr("name");
-        var src = node.attr("src");
-        var child = new XElement("meta").set("compiler", compiler).set("name", name).set("src", src).compile();
-        child.Value = node.Value;
-        node.RemoveAttributes();
-        node.Name = "lazy";
-        node.Add(child);
-    }
-    public static void STD(XElement node)
-    {
-        var std = node.attr("std");
-        var child = new XElement("std").set("std", std).compile();
-        node.RemoveAll();
-        node.Name = "lazy";
-        node.Add(child);
-    }
+    public static void LAZY(XElement node) {}
+    public static void FUNC(XElement node) => node.Name = "func";
+    public static void ARG(XElement node) => node.Name = "arg";
+    public static void EVT(XElement node) => node.Name = "evt";
+    public static void META(XElement node) => node.Name = "meta";
+    public static void STD(XElement node) => node.Name = "std";
     public static void INSTRUCTION(XElement node)
     {
         var opcode = Enum.Parse<OpCode>((node.attr("opcode") ?? "NOP").ToUpper());
