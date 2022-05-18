@@ -10,7 +10,8 @@
 
     <literal type="int" val="0" />
     <instruction opcode="equal" />
-    <if> <!-- if ((x-1)&x == 0) return "IS_POWER_OF_2"; -->
+    <if>
+        <!-- if ((x-1)&x == 0) return "IS_POWER_OF_2"; -->
         <literal type="string" val="IS_POWER_OF_2" />
         <instruction opcode="ret" />
     </if>

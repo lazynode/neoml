@@ -7,17 +7,19 @@
     <literal type="int" val="0" />
     <instruction opcode="stloc0" /> <!-- sum = 0 -->
 
-    <dowhile> <!-- do { sum += x; x -= 1; } -->
+    <instruction opcode="dup" />
+    <while>
+        <!-- while (x != 0) -->
+        <!-- sum += x; x -= 1; -->
         <instruction opcode="dup" />
         <instruction opcode="ldloc0" />
         <instruction opcode="add" />
         <instruction opcode="stloc0" />
-        
         <instruction opcode="dec" />
 
-        <!-- while (x != 0) -->
+        <!-- dup x for next test in loop -->
         <instruction opcode="dup" />
-    </dowhile>
+    </while>
 
     <instruction opcode="clear" />
     <instruction opcode="ldloc0" />

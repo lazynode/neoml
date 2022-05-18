@@ -3,13 +3,15 @@
     <!-- Tell me a number. I'll tell you if it's negative or not. -->
     <literal type="int" val="7" />
 
-    <lazy> <!-- lazy could format our code into blocks, add tag and ret, it'll be more like a function -->
+    <lazy>
+        <!-- lazy could format our code into blocks, add tag and ret, it'll be more like a function -->
         <tag name="fib" />
 
         <instruction opcode="dup" />
         <literal type="int" val="1" />
         <instruction opcode="le" />
-        <if> <!-- if (x <= 1) return 1;  -->
+        <if>
+            <!-- if (x <= 1) return 1;  -->
             <instruction opcode="drop" /> <!-- clear the parameter -->
             <literal type="int" val="1" /> <!-- level 1 as return value -->
             <instruction opcode="ret" />
