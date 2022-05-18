@@ -1,0 +1,31 @@
+<?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
+<lazy xmlns="Assembly" bytecode="F0oRticIAAAARRFAShGfNfL///9QEp816v///55A" result='{"type":"Integer","value":"21"}'>
+    <!-- Tell me a number. I'll tell you if it's negative or not. -->
+    <literal type="int" val="7" />
+
+    <lazy> <!-- lazy could format our code into blocks, add tag and ret, it'll be more like a function -->
+        <tag name="fib" />
+
+        <instruction opcode="dup" />
+        <literal type="int" val="1" />
+        <instruction opcode="le" />
+        <if> <!-- if (x <= 1) return 1;  -->
+            <instruction opcode="drop" /> <!-- clear the parameter -->
+            <literal type="int" val="1" /> <!-- level 1 as return value -->
+            <instruction opcode="ret" />
+        </if>
+
+        <instruction opcode="dup" />
+        <literal type="int" val="1" />
+        <instruction opcode="sub" />
+        <call target="fib" /> <!-- call fib(x-1) -->
+
+        <instruction opcode="swap" />
+        <literal type="int" val="2" />
+        <instruction opcode="sub" />
+        <call target="fib" /> <!-- call fib(x-2) -->
+
+        <instruction opcode="add" />
+        <instruction opcode="ret" /> <!-- return fib(x-1) + fib(x-2) -->
+    </lazy>
+</lazy>
