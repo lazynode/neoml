@@ -12,14 +12,29 @@ static class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
     public static void LAZY(XElement node) { }
-    public static void FUNC(XElement node) { 
+    public static void FUNC(XElement node) {
+        var name = node.attr("name");
+        var safe = node.attr("safe");
+        var ret = node.attr("return");
+        var child = new XElement("func").set("name", name).set("safe", safe).set("return", ret);
+        child.Value = node.Value;
+        node.RemoveAttributes();
+        node.Name = "lazy";
+        node.AddFirst(child);
         node.Name = ns + "lazy";
-        node.compile();
+    }
+    public static void ARG(XElement node) { 
+        node.Name = "lazy";
+    }
+    public static void EVT(XElement node) { 
+        node.Name = "lazy";
     }
     public static void META(XElement node)
     {
         var compiler = node.attr("compiler");
-        var child = new XElement("meta").set("compiler", compiler).compile();
+        var name = node.attr("name");
+        var src = node.attr("src");
+        var child = new XElement("meta").set("compiler", compiler).set("name", name).set("src", src).compile();
         child.Value = node.Value;
         node.RemoveAttributes();
         node.Name = "lazy";
