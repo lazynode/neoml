@@ -1,5 +1,5 @@
 <?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
-<lazy xmlns="Assembly" bytecode="DA1IZWxsbywgd29ybGQh" result='{"type":"ByteString","value":"SGVsbG8sIHdvcmxkIQ=="}'>
+<lazy xmlns="Assembly" bytecode="DAVOZW9NTEAYQAIA4fUFQAE5BUARQA==" result='{"type":"ByteString","value":"TmVvTUw="}'>
     <meta name="Nep17Token" src="https://github.com/lazynode/neoml/blob/dev/examples/a.function.simplenep17.xml">
         { "email": "developer@neo.org", "author": "lazynode", "description": "A Simple Nep-17 Contract" }
     </meta>
@@ -32,7 +32,7 @@
         <instruction opcode="ret" />
     </func>
 
-    <func name="transfer" safe="true" return="bool">
+    <func name="transfer" safe="false" return="bool">
         <arg name="from" type="hash160" />
         <arg name="to" type="hash160" />
         <arg name="amount" type="int" />
