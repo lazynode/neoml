@@ -18,8 +18,8 @@ static class Output
     public static int position(this XElement node) => node.root().leaves().TakeWhile(v => v != node).Select(v => v.size()).Sum();
     public static XElement root(this XElement node) => node.Parent is null ? node : node.Parent.root();
     public static JObject[] parameters(this XElement node) => node.Elements().Where(v => v.Name.LocalName == "arg").Select(v => new JObject { ["name"] = node.attr("name"), ["type"] = node.attr("type")!.pipe(v => TYPEFIX[v]) }).ToArray();
-    public static JObject[] permissions(this XElement node) => new JObject[] { }; // TODO
-    public static JObject[] trusts(this XElement node) => new JObject[] { }; // TODO
+    public static JObject[] permissions(this XElement node) => new JObject[] { new JObject { ["contract"] = "*", ["methods"] = "*" } }; // TODO: IMPL
+    public static JObject[] trusts(this XElement node) => new JObject[] { }; //TODO: IMPL
     public static JObject extra(this XElement node) => node.leaves().Where(v => v.Name.LocalName == "meta").SingleOrDefault()?.Value?.pipe(v => JObject.Parse(v)) ?? new JObject();
     public static MethodToken[] methodtokens(this XElement node) => new MethodToken[] { };
     public static byte[] nef(this XElement node) => new NefFile() { Compiler = node.meta("compiler", "neoml"), Source = node.meta("src"), Tokens = node.methodtokens(), Script = node.finalize() }.with(v => { v.CheckSum = NefFile.ComputeChecksum(v); }).ToArray();
