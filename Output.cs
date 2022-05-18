@@ -8,33 +8,22 @@ using Neo.IO.Json;
 namespace neoml;
 static class Output
 {
-    public const string LAZY = "lazy";
+    public static Dictionary<string, string> TYPEFIX = new() { { "int", "Integer" }, { "integer", "Integer" }, { "Integer", "Integer" }, { "bool", "Boolean" }, { "boolean", "Boolean" }, { "Boolean", "Boolean" }, { "any", "Any" }, { "bytes", "ByteArray" }, { "bytearray", "ByteArray" }, { "ByteArray", "ByteArray" }, { "string", "String" }, { "String", "String" }, { "Hash160", "Hash160" }, { "hash160", "Hash160" }, { "Hash256", "Hash256" }, { "hash256", "Hash256" }, { "publickey", "PublicKey" }, { "PublicKey", "PublicKey" }, { "signature", "Signature" }, { "Signature", "Signature" }, { "array", "Array" }, { "Array", "Array" }, { "map", "Map" }, { "Map", "Map" }, { "interopinterface", "InteropInterface" }, { "InteropInterface", "InteropInterface" }, { "void", "Void" }, { "Void", "Void" } };
     public static byte[] finalize(this XElement node) => node.leaves().Aggregate(Enumerable.Empty<byte>(), (sb, v) => sb.withassert(v.Name.NamespaceName.Length == 0).emit(v)).ToArray();
     public static string meta(this XElement node, string key, string def = "") => node.leaves().Where(v => v.Name.LocalName == "meta").SingleOrDefault()?.attr(key) ?? def;
     public static JString[] supportedstandards(this XElement node) => node.leaves().Where(v => v.Name.LocalName == "std").Select(v => (JString)v.attr("std")!).ToArray();
-    public static JObject abi(this XElement node) => new JObject { }; // TODO
+    public static JObject abi(this XElement node) => new JObject { ["methods"] = node.leaves().Where(v => v.Name.LocalName == "func").Select(v => v.func()).ToArray(), ["events"] = node.leaves().Where(v => v.Name.LocalName == "evt").Select(v => v.evt()).ToArray() };
+    public static JObject func(this XElement node) => new JObject { ["name"] = node.attr("name"), ["offset"] = node.position(), ["safe"] = bool.Parse(node.attr("safe") ?? "false"), ["returntype"] = node.attr("return")!.pipe(v => TYPEFIX[v]), ["parameters"] = node.parameters() };
+    public static JObject evt(this XElement node) => new JObject { ["name"] = node.attr("name"), ["parameters"] = node.parameters() };
+    public static int position(this XElement node) => node.root().leaves().TakeWhile(v => v != node).Select(v => v.size()).Sum();
+    public static XElement root(this XElement node) => node.Parent is null ? node : node.Parent.root();
+    public static JObject[] parameters(this XElement node) => node.Elements().Where(v => v.Name.LocalName == "arg").Select(v => new JObject { ["name"] = node.attr("name"), ["type"] = node.attr("type")!.pipe(v => TYPEFIX[v]) }).ToArray();
     public static JObject[] permissions(this XElement node) => new JObject[] { }; // TODO
     public static JObject[] trusts(this XElement node) => new JObject[] { }; // TODO
     public static JObject extra(this XElement node) => node.leaves().Where(v => v.Name.LocalName == "meta").SingleOrDefault()?.Value?.pipe(v => JObject.Parse(v)) ?? new JObject();
     public static MethodToken[] methodtokens(this XElement node) => new MethodToken[] { };
     public static byte[] nef(this XElement node) => new NefFile() { Compiler = node.meta("compiler", "neoml"), Source = node.meta("src"), Tokens = node.methodtokens(), Script = node.finalize() }.with(v => { v.CheckSum = NefFile.ComputeChecksum(v); }).ToArray();
     public static string manifest(this XElement node) => new JObject() { ["name"] = node.meta("name"), ["groups"] = new JArray(), ["features"] = new JObject(), ["supportedstandards"] = node.supportedstandards(), ["abi"] = node.abi(), ["permissions"] = node.permissions(), ["trusts"] = node.trusts(), ["extra"] = node.extra() }.ToString();
-    // ["abi"] = new JObject
-    // {
-    //     ["methods"] = methodsExported.Select(p => new JObject
-    //     {
-    //         ["name"] = p.Name,
-    //         ["offset"] = GetAbiOffset(p.Symbol),
-    //         ["safe"] = p.Safe,
-    //         ["returntype"] = p.ReturnType,
-    //         ["parameters"] = p.Parameters.Select(p => p.ToJson()).ToArray()
-    //     }).ToArray(),
-    //     ["events"] = eventsExported.Select(p => new JObject
-    //     {
-    //         ["name"] = p.Name,
-    //         ["parameters"] = p.Parameters.Select(p => p.ToJson()).ToArray()
-    //     }).ToArray()
-    // },
     public static IEnumerable<byte> emit(this IEnumerable<byte> sb, XElement node)
     {
         switch (node.Name.LocalName)
