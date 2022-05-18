@@ -1,3 +1,4 @@
-<lazy xmlns="Assembly" bytecode="DA1IZWxsbywgd29ybGQh">
+<?xml-model href="https://neoburger.blob.core.windows.net/neoml/lazy.xsd"?>
+<lazy xmlns="Assembly" bytecode="DA1IZWxsbywgd29ybGQh" result='{"type":"ByteString","value":"SGVsbG8sIHdvcmxkIQ=="}'>
     <literal type="string" val="Hello, world!" />
 </lazy>

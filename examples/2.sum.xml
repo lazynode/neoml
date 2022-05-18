@@ -1,4 +1,5 @@
-<lazy xmlns="Assembly" bytecode="EhOe">
+<?xml-model href="https://neoburger.blob.core.windows.net/neoml/lazy.xsd"?>
+<lazy xmlns="Assembly" bytecode="EhOe" result='{"type":"Integer","value":"5"}'>
     <literal type="int" val="2" />
     <literal type="int" val="3" />
     <instruction opcode="add" />
