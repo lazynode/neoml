@@ -1,4 +1,4 @@
-<?xml-model href="https://neoburger.blob.core.windows.net/neoml/lazy.xsd"?>
+<?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
 <lazy xmlns="Assembly" bytecode="DCEDiboAhW9YvcK3w/1sLnPtSCklLzgIPB4pVXTKWZ6T/oJBz5mHAg==" result='{"type":"ByteString","value":"60Mnt8lISzr52LyvIEidbK6888w="}'>
     <literal type="bytes" val="0389ba00856f58bdc2b7c3fd6c2e73ed4829252f38083c1e295574ca599e93fe82" />
     <syscall name= "System.Contract.CreateStandardAccount" />

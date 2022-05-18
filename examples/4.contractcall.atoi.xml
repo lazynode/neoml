@@ -1,4 +1,4 @@
-<?xml-model href="https://neoburger.blob.core.windows.net/neoml/lazy.xsd"?>
+<?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
 <lazy xmlns="Assembly" bytecode="IAwFMGZmZmYSwB8MBGF0b2kMFMDvOc7g5OklxsKgannhRA3Yb86sQWJ9W1I=" result='{"type":"Integer","value":"65535"}'>
     <literal type="int" val="16" />
     <literal type="string" val="0ffff" />

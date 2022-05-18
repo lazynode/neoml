@@ -1,4 +1,4 @@
-<?xml-model href="https://neoburger.blob.core.windows.net/neoml/lazy.xsd"?>
+<?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
 <lazy xmlns="Assembly" bytecode="DAZTdW5kYXlKDAZNb25kYXkpYQAAAEoMB1R1ZXNkYXkpUgAAAEoMCVdlZG5lc2RheSlBAAAASgwIVGh1cnNkYXkpMQAAAEoMBkZyaWRheSkjAAAASgwIU2F0dXJkYXkpHgAAAEoMBlN1bmRheSkQAAAASQwHV0VFS0RBWUBJDAdXRUVLRU5EQA==" result='{"type":"ByteString","value":"V0VFS0VORA=="}'>
     <!-- Tell me what's the day today. I'll give you if it's weekday or not. -->
     <literal type="string" val="Sunday" />
