@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema xmlns='http://www.w3.org/2001/XMLSchema' targetNamespace='Assembly' xmlns:t='Assembly'>
+
+  <element name='lazy'>
+    <complexType>
+      <choice minOccurs='0' maxOccurs='unbounded'>
+        <element ref='t:literal' />
+        <element ref='t:nop' />
+        <element ref='t:tag' />
+        <element ref='t:goto' />
+        <element ref='t:skip' />
+        <element ref='t:if' />
+        <element ref='t:unless' />
+        <element ref='t:contractcall' />
+        <element ref='t:call' />
+        <element ref='t:dowhile' />
+        <element ref='t:while' />
+        <element ref='t:syscall' />
+        <element ref='t:instruction' />
+      </choice>
+    </complexType>
+  </element>
+
+  <element name='literal'>
+    <complexType mixed='true'>
+      <attribute name='type' type='string' use='required' />
+      <attribute name='val' type='string' use='optional' />
+    </complexType>
+  </element>
+
+  <element name='nop'>
+    <complexType />
+  </element>
+
+  <element name='tag'>
+    <complexType mixed='true'>
+      <attribute name='id' type='ID' use='required' />
+    </complexType>
+  </element>
+
+  <element name='goto'>
+    <complexType mixed='true'>
+      <attribute name='target' type='IDREF' use='required' />
+    </complexType>
+  </element>
+
+  <element name='skip'>
+    <complexType mixed='true'>
+      <attribute name='cond' use='optional'>
+        <simpleType>
+          <restriction base='string'>
+            <enumeration value='' />
+            <enumeration value='eq' />
+            <enumeration value='ne' />
+            <enumeration value='le' />
+            <enumeration value='lt' />
+            <enumeration value='ge' />
+            <enumeration value='gt' />
+            <enumeration value='if' />
+            <enumeration value='ifnot' />
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+
+  <element name='if'>
+    <complexType />
+  </element>
+
+  <element name='unless'>
+    <complexType />
+  </element>
+
+  <element name='contractcall'>
+    <complexType mixed='true'>
+      <attribute name='hash' type='string' use='required' />
+    </complexType>
+  </element>
+
+  <element name='call'>
+    <complexType mixed='true'>
+      <attribute name='target' type='IDREF' use='required' />
+    </complexType>
+  </element>
+
+  <element name='dowhile'>
+    <complexType />
+  </element>
+
+  <element name='while'>
+    <complexType />
+  </element>
+
+  <element name='syscall'>
+    <complexType mixed='true'>
+      <attribute name='name' use='required'>
+        <simpleType>
+          <restriction base='string'>
+            <enumeration value='System.Contract.Call' />
+            <enumeration value='System.Contract.GetCallFlags' />
+            <enumeration value='System.Contract.CreateStandardAccount' />
+            <enumeration value='System.Contract.CreateMultisigAccount' />
+            <enumeration value='System.Crypto.CheckSig' />
+            <enumeration value='System.Crypto.CheckMultisig' />
+            <enumeration value='System.Iterator.Next' />
+            <enumeration value='System.Iterator.Values' />
+            <enumeration value='System.Runtime.Platform' />
+            <enumeration value='System.Runtime.GetTrigger' />
+            <enumeration value='System.Runtime.GetTime' />
+            <enumeration value='System.Runtime.GetScriptContainer' />
+            <enumeration value='System.Runtime.GetExecutingScriptHash' />
+            <enumeration value='System.Runtime.GetCallingScriptHash' />
+            <enumeration value='System.Runtime.GetEntryScriptHash' />
+            <enumeration value='System.Runtime.CheckWitness' />
+            <enumeration value='System.Runtime.GetInvocationCounter' />
+            <enumeration value='System.Runtime.Log' />
+            <enumeration value='System.Runtime.GetNotifications' />
+            <enumeration value='System.Runtime.GasLeft' />
+            <enumeration value='System.Runtime.BurnGas' />
+            <enumeration value='System.Runtime.GetNetwork' />
+            <enumeration value='System.Runtime.GetRandom' />
+            <enumeration value='System.Storage.GetContext' />
+            <enumeration value='System.Storage.GetReadOnlyContext' />
+            <enumeration value='System.StorageContext.AsReadOnly' />
+            <enumeration value='System.Storage.Get' />
+            <enumeration value='System.Storage.Find' />
+            <enumeration value='System.Storage.Put' />
+            <enumeration value='System.Storage.Delete' />
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+
+  <element name='instruction'>
+    <complexType mixed='true'>
+      <attribute name='operand' type='string' use='optional' />
+      <attribute name='opcode' use='required'>
+        <simpleType>
+          <restriction base='string'>            <enumeration value='callt' />
+            <enumeration value='append' />
+            <enumeration value='reverseitems' />
+            <enumeration value='setitem' />
+            <enumeration value='values' />
+            <enumeration value='pushdata4' />
+            <enumeration value='cat' />
+            <enumeration value='convert' />
+            <enumeration value='left' />
+            <enumeration value='memcpy' />
+            <enumeration value='right' />
+            <enumeration value='substr' />
+            <enumeration value='call' />
+            <enumeration value='calll' />
+            <enumeration value='calla' />
+            <enumeration value='newarray' />
+            <enumeration value='newarrayt' />
+            <enumeration value='newstruct' />
+            <enumeration value='pack' />
+            <enumeration value='pushdata2' />
+            <enumeration value='throw' />
+            <enumeration value='unpack' />
+            <enumeration value='newbuffer' />
+            <enumeration value='haskey' />
+            <enumeration value='initslot' />
+            <enumeration value='pickitem' />
+            <enumeration value='equal' />
+            <enumeration value='notequal' />
+            <enumeration value='clear' />
+            <enumeration value='clearitems' />
+            <enumeration value='initsslot' />
+            <enumeration value='keys' />
+            <enumeration value='newarray0' />
+            <enumeration value='newstruct0' />
+            <enumeration value='popitem' />
+            <enumeration value='remove' />
+            <enumeration value='reversen' />
+            <enumeration value='roll' />
+            <enumeration value='xdrop' />
+            <enumeration value='add' />
+            <enumeration value='and' />
+            <enumeration value='booland' />
+            <enumeration value='boolor' />
+            <enumeration value='div' />
+            <enumeration value='ge' />
+            <enumeration value='gt' />
+            <enumeration value='le' />
+            <enumeration value='lt' />
+            <enumeration value='max' />
+            <enumeration value='min' />
+            <enumeration value='mod' />
+            <enumeration value='mul' />
+            <enumeration value='newmap' />
+            <enumeration value='numequal' />
+            <enumeration value='numnotequal' />
+            <enumeration value='or' />
+            <enumeration value='pushdata1' />
+            <enumeration value='shl' />
+            <enumeration value='shr' />
+            <enumeration value='sub' />
+            <enumeration value='within' />
+            <enumeration value='xor' />
+            <enumeration value='abs' />
+            <enumeration value='dec' />
+            <enumeration value='endfinally' />
+            <enumeration value='endtry' />
+            <enumeration value='endtryl' />
+            <enumeration value='inc' />
+            <enumeration value='invert' />
+            <enumeration value='negate' />
+            <enumeration value='not' />
+            <enumeration value='nz' />
+            <enumeration value='pusha' />
+            <enumeration value='pushint128' />
+            <enumeration value='pushint256' />
+            <enumeration value='sign' />
+            <enumeration value='size' />
+            <enumeration value='try' />
+            <enumeration value='tryl' />
+            <enumeration value='depth' />
+            <enumeration value='drop' />
+            <enumeration value='dup' />
+            <enumeration value='isnull' />
+            <enumeration value='istype' />
+            <enumeration value='jmp' />
+            <enumeration value='jmpl' />
+            <enumeration value='jmpeq' />
+            <enumeration value='jmpeql' />
+            <enumeration value='jmpge' />
+            <enumeration value='jmpgel' />
+            <enumeration value='jmpgt' />
+            <enumeration value='jmpgtl' />
+            <enumeration value='jmpif' />
+            <enumeration value='jmpifl' />
+            <enumeration value='jmpifnot' />
+            <enumeration value='jmpifnotl' />
+            <enumeration value='jmple' />
+            <enumeration value='jmplel' />
+            <enumeration value='jmplt' />
+            <enumeration value='jmpltl' />
+            <enumeration value='jmpne' />
+            <enumeration value='jmpne_l' />
+            <enumeration value='ldarg' />
+            <enumeration value='ldarg0' />
+            <enumeration value='ldarg1' />
+            <enumeration value='ldarg2' />
+            <enumeration value='ldarg3' />
+            <enumeration value='ldarg4' />
+            <enumeration value='ldarg5' />
+            <enumeration value='ldarg6' />
+            <enumeration value='ldloc' />
+            <enumeration value='ldloc0' />
+            <enumeration value='ldloc1' />
+            <enumeration value='ldloc2' />
+            <enumeration value='ldloc3' />
+            <enumeration value='ldloc4' />
+            <enumeration value='ldloc5' />
+            <enumeration value='ldloc6' />
+            <enumeration value='ldsfld' />
+            <enumeration value='ldsfld0' />
+            <enumeration value='ldsfld1' />
+            <enumeration value='ldsfld2' />
+            <enumeration value='ldsfld3' />
+            <enumeration value='ldsfld4' />
+            <enumeration value='ldsfld5' />
+            <enumeration value='ldsfld6' />
+            <enumeration value='nip' />
+            <enumeration value='over' />
+            <enumeration value='pick' />
+            <enumeration value='reverse3' />
+            <enumeration value='reverse4' />
+            <enumeration value='rot' />
+            <enumeration value='starg' />
+            <enumeration value='starg0' />
+            <enumeration value='starg1' />
+            <enumeration value='starg2' />
+            <enumeration value='starg3' />
+            <enumeration value='starg4' />
+            <enumeration value='starg5' />
+            <enumeration value='starg6' />
+            <enumeration value='stloc' />
+            <enumeration value='stloc0' />
+            <enumeration value='stloc1' />
+            <enumeration value='stloc2' />
+            <enumeration value='stloc3' />
+            <enumeration value='stloc4' />
+            <enumeration value='stloc5' />
+            <enumeration value='stloc6' />
+            <enumeration value='stsfld' />
+            <enumeration value='stsfld0' />
+            <enumeration value='stsfld1' />
+            <enumeration value='stsfld2' />
+            <enumeration value='stsfld3' />
+            <enumeration value='stsfld4' />
+            <enumeration value='stsfld5' />
+            <enumeration value='stsfld6' />
+            <enumeration value='swap' />
+            <enumeration value='tuck' />
+            <enumeration value='assert' />
+            <enumeration value='nop' />
+            <enumeration value='push0' />
+            <enumeration value='push1' />
+            <enumeration value='push10' />
+            <enumeration value='push11' />
+            <enumeration value='push12' />
+            <enumeration value='push13' />
+            <enumeration value='push14' />
+            <enumeration value='push15' />
+            <enumeration value='push16' />
+            <enumeration value='push2' />
+            <enumeration value='push3' />
+            <enumeration value='push4' />
+            <enumeration value='push5' />
+            <enumeration value='push6' />
+            <enumeration value='push7' />
+            <enumeration value='push8' />
+            <enumeration value='push9' />
+            <enumeration value='pushint16' />
+            <enumeration value='pushint32' />
+            <enumeration value='pushint64' />
+            <enumeration value='pushint8' />
+            <enumeration value='pushm1' />
+            <enumeration value='pushnull' />
+            <enumeration value='abort' />
+            <enumeration value='ret' />
+            <enumeration value='syscall' />
+            <enumeration value='' />
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+</schema>
