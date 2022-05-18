@@ -175,8 +175,8 @@ static class Assembly
         Guid stop = Guid.NewGuid();
         var tagstart = new XElement(ns + "tag").set("name", start).compile();
         var tagstop = new XElement(ns + "tag").set("name", stop).compile();
-        var gotostart = new XElement(ns + "goto").set("target", start).set("cond", "if");
-        var gotostop = new XElement(ns + "goto").set("target", stop);
+        var gotostart = new XElement(ns + "goto").set("target", start).set("cond", "if").compile();
+        var gotostop = new XElement(ns + "goto").set("target", stop).compile();
         node.AddFirst(tagstart);
         node.Add(tagstop);
         node.AddFirst(gotostop);

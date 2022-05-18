@@ -1,5 +1,5 @@
 <?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
-<lazy xmlns="Assembly" bytecode="AGRXAQAQcEponnCdSiX6////SWg=" result='{"type":"Integer","value":"5050"}'>
+<lazy xmlns="Assembly" bytecode="AGRXAQAQcEojCwAAAEponnCdSiX6////SWg=" result='{"type":"Integer","value":"5050"}'>
     <!-- Tell me a positive number x. I'll tell you the sum from 0 to x. -->
     <literal type="int" val="100" />
 
