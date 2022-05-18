@@ -12,6 +12,10 @@ static class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
     public static void LAZY(XElement node) { }
+    public static void FUNC(XElement node) { 
+        node.Name = ns + "lazy";
+        node.compile();
+    }
     public static void META(XElement node)
     {
         var compiler = node.attr("compiler");
