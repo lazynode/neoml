@@ -1,0 +1,36 @@
+<?xml-model href="https://neoburger.blob.core.windows.net/neoml/lazy.xsd"?>
+<lazy xmlns="Assembly" bytecode="DAZTdW5kYXlKDAZNb25kYXkpYQAAAEoMB1R1ZXNkYXkpUgAAAEoMCVdlZG5lc2RheSlBAAAASgwIVGh1cnNkYXkpMQAAAEoMBkZyaWRheSkjAAAASgwIU2F0dXJkYXkpHgAAAEoMBlN1bmRheSkQAAAASQwHV0VFS0RBWUBJDAdXRUVLRU5EQA==" result='{"type":"ByteString","value":"V0VFS0VORA=="}'>
+    <!-- Tell me what's the day today. I'll give you if it's weekday or not. -->
+    <literal type="string" val="Sunday" />
+
+    <instruction opcode="dup" />
+    <literal type="string" val="Monday" />
+    <goto target="weekday_result" cond="eq" />
+    <instruction opcode="dup" />
+    <literal type="string" val="Tuesday" />
+    <goto target="weekday_result" cond="eq" />
+    <instruction opcode="dup" />
+    <literal type="string" val="Wednesday" />
+    <goto target="weekday_result" cond="eq" />
+    <instruction opcode="dup" />
+    <literal type="string" val="Thursday" />
+    <goto target="weekday_result" cond="eq" />
+    <instruction opcode="dup" />
+    <literal type="string" val="Friday" />
+    <goto target="weekday_result" cond="eq" />
+    <instruction opcode="dup" />
+    <literal type="string" val="Saturday" />
+    <goto target="weekend_result" cond="eq" />
+    <instruction opcode="dup" />
+    <literal type="string" val="Sunday" />
+    <goto target="weekend_result" cond="eq" />
+
+    <tag name="weekday_result" />
+    <instruction opcode="clear" />
+    <literal type="string" val="WEEKDAY" />
+    <instruction opcode="ret" />
+    <tag name="weekend_result" />
+    <instruction opcode="clear" />
+    <literal type="string" val="WEEKEND" />
+    <instruction opcode="ret" />
+</lazy>

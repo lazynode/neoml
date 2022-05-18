@@ -4,6 +4,9 @@ using neoml;
 
 switch (Environment.GetEnvironmentVariable("OUTPUT"))
 {
+    case "DEBUG":
+        Console.OpenStandardInput().pipe(XElement.Load).compile().print();
+        break;
     case "BIN":
         Console.OpenStandardInput().pipe(XElement.Load).finalize().write();
         break;
