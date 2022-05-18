@@ -5,16 +5,21 @@ using neoml;
 switch (Environment.GetEnvironmentVariable("OUTPUT"))
 {
     case "BIN":
-        Console.OpenStandardOutput().Write(XElement.Load(Console.OpenStandardInput()).compile().finalize());
+        Console.OpenStandardInput().pipe(XElement.Load).finalize().write();
         break;
     case "NEF":
-        Console.OpenStandardOutput().Write(XElement.Load(Console.OpenStandardInput()).compile().finalize());
+        Console.OpenStandardInput().pipe(XElement.Load).nef().write();
         break;
     case "MANIFEST":
-        Console.WriteLine(XElement.Load(Console.OpenStandardInput()).compile().manifest());
+        Console.OpenStandardInput().pipe(XElement.Load).manifest().print();
+        break;
+    case "BASE64":
+        Console.OpenStandardInput().pipe(XElement.Load).finalize().pipe(Convert.ToBase64String).print();
         break;
     case "HEX":
-    default:
-        Console.WriteLine(XElement.Load(Console.OpenStandardInput()).compile().finalize().ToHexString());
+    case null:
+        Console.OpenStandardInput().pipe(XElement.Load).finalize().ToHexString().print();
         break;
+    default:
+        throw new Exception();
 }
