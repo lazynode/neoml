@@ -1,0 +1,24 @@
+<?xml-model href="https://lazynode.github.io/neoml/Assembly.xsd"?>
+<lazy xmlns="Assembly" bytecode="AGRXAQAQcEponnCdSiX6////SWg=" result='{"type":"Integer","value":"5050"}'>
+    <!-- Tell me a positive number x. I'll tell you the sum from 0 to x. -->
+    <literal type="int" val="100" />
+
+    <instruction opcode="initslot" operand="0100" /> <!-- init slot to store sum -->
+    <literal type="int" val="0" />
+    <instruction opcode="stloc0" /> <!-- sum = 0 -->
+
+    <dowhile> <!-- do { sum += x; x -= 1; } -->
+        <instruction opcode="dup" />
+        <instruction opcode="ldloc0" />
+        <instruction opcode="add" />
+        <instruction opcode="stloc0" />
+        
+        <instruction opcode="dec" />
+
+        <!-- while (x != 0) -->
+        <instruction opcode="dup" />
+    </dowhile>
+
+    <instruction opcode="clear" />
+    <instruction opcode="ldloc0" />
+</lazy>
