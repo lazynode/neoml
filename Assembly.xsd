@@ -1,7 +1,56 @@
 <?xml version="1.0"?>
 
 <schema xmlns='http://www.w3.org/2001/XMLSchema' targetNamespace='Assembly' xmlns:a='Assembly'>
+  
+  <!-- normal elements -->
+  <element name='if' type='a:any' />
+  <element name='unless' type='a:any' />
+  <element name='dowhile' type='a:any' />
+  <element name='nop' type='a:empty' />
+  <element name='tag'>
+    <complexType>
+      <attribute name='name' type='ID' use='required' />
+    </complexType>
+  </element>
+  <element name='goto'>
+    <complexType>
+      <attribute name='cond' type='a:coditionType' use='optional' />
+      <attribute name='target' type='IDREF' use='required' />
+    </complexType>
+  </element>
+  <element name='call'>
+    <complexType>
+      <attribute name='target' type='IDREF' use='required' />
+    </complexType>
+  </element>
+  <element name='skip'>
+    <complexType>
+      <sequence>
+        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+      <attribute name='cond' type='a:coditionType' use='optional' />
+    </complexType>
+  </element>
+  <element name='contractcall'>
+    <complexType>
+      <attribute name='flag' type='a:callFlagType' use='optional' default="All" />
+      <attribute name='method' type='Name' use='required' />
+      <attribute name='hash' type='a:hash160Literal' use='required'></attribute>
+    </complexType>
+  </element>
+  <element name='syscall'>
+    <complexType>
+      <attribute name='name' type='a:syscallType' use='required' />
+    </complexType>
+  </element>
+  <element name='instruction'>
+    <complexType>
+      <attribute name='operand' type='a:oprandType' use='optional' />
+      <attribute name='opcode' type='a:opcodeType' use='required' />
+    </complexType>
+  </element>
 
+  <!-- the two most important elements: lazy and func-->
   <element name='lazy'>
     <complexType>
       <sequence>
@@ -14,7 +63,6 @@
       <attribute name='result' type='string' use='optional' />
     </complexType>
   </element>
-
   <element name='func'>
     <complexType>
       <sequence>
@@ -23,10 +71,32 @@
       </sequence>
       <attribute name='name' type='Name' use='required' />
       <attribute name='safe' type='a:boolLiteral' use='optional' />
-      <attribute name='return' type='a:fullLiteralType' use='optional' />
+      <attribute name='return' type='a:literalType' use='optional' />
     </complexType>
   </element>
 
+  <!-- contract definition related elements -->
+  <element name='meta'>
+    <complexType>
+      <simpleContent>
+        <extension base="string">
+          <attribute name='compiler' type='a:MaxLen64String' use='optional' default="neoml" />
+          <attribute name='src' type='string' use='optional' default="neo.org" />
+          <attribute name='name' type='Name' use='required' />
+        </extension>
+      </simpleContent>
+    </complexType>
+  </element>
+  <element name='std'>
+    <complexType>
+      <annotation>
+        <documentation>
+          Supported Standard: NEP-17 NEP-11 ...
+        </documentation>
+      </annotation>
+      <attribute name='std' type='a:stdType' use='required' />
+    </complexType>
+  </element>
   <element name='evt'>
     <complexType>
       <sequence minOccurs="0" maxOccurs="unbounded">
@@ -35,136 +105,67 @@
       <attribute name='name' type='Name' use='required' />
     </complexType>
   </element>
-
   <element name="arg">
     <complexType>
       <attribute name='name' type='Name' use='required' />
-      <attribute name='type' type='a:fullLiteralType' use='required' />
+      <attribute name='type' type='a:literalType' use='required' />
     </complexType>
   </element>
 
-  <element name='if' type='a:any' />
-  <element name='unless' type='a:any' />
-  <element name='dowhile' type='a:any' />
-  <element name='while' type='a:any' />
-  <element name='nop' type='a:empty' />
-
+  <!-- literal elements -->
   <element name="compound">
     <complexType>
       <sequence>
         <element ref='a:lazy' minOccurs="0" maxOccurs="unbounded" />
-        <element ref="a:literal" minOccurs="0" maxOccurs="unbounded" />
+        <group ref="a:literal" minOccurs="0" maxOccurs="unbounded" />
       </sequence>
       <attribute name='type' type='a:literalCompoundType' use='optional' default="array" />
       <attribute name='size' type='integer' use='optional' />
     </complexType>
   </element>
-
-  <element name='literal'>
+  <element name='int'>
     <complexType>
-      <attribute name='int' type='a:intLiteral' use='optional' default="0" />
-      <attribute name='bool' type='a:boolLiteral' use='optional' default="false" />
-      <attribute name='string' type='string' use='optional' default="" />
-      <attribute name='bytes' type='a:bytesLiteral' use='optional' default="" />
-      <attribute name='null' type='string' use='optional' fixed="null" />
-      <attribute name='hash160' type='a:predefinedHash160Literal' use='optional' />
-      <attribute name='hash256' type='a:hash256Literal' use='optional' />
-      <attribute name='address' type='a:addressLiteral' use='optional' />
-      <attribute name='publickey' type='a:publickeyLiteral' use='optional' />
+      <attribute name='val' type='a:intLiteral' use='optional' default="0" />
+    </complexType>
+  </element>
+  <element name='bool'>
+    <complexType>
+      <attribute name='val' type='a:boolLiteral' use='optional' default="false" />
+    </complexType>
+  </element>
+  <element name='string'>
+    <complexType>
+      <attribute name='val' type='string' use='optional' default="" />
+    </complexType>
+  </element>
+  <element name='bytes'>
+    <complexType>
+      <attribute name='val' type='a:bytesLiteral' use='optional' default="" />
+    </complexType>
+  </element>
+  <element name='null' type="a:empty" />
+  <element name='hash160'>
+    <complexType>
+      <attribute name='val' type='a:hash160Literal' use='required' />
+    </complexType>
+  </element>
+  <element name='hash256'>
+    <complexType>
+      <attribute name='val' type='a:hash256Literal' use='required' />
+    </complexType>
+  </element>
+  <element name='address'>
+    <complexType>
+      <attribute name='val' type='a:addressLiteral' use='required' />
+    </complexType>
+  </element>
+  <element name='publickey'>
+    <complexType>
+      <attribute name='val' type='a:publickeyLiteral' use='required' />
     </complexType>
   </element>
 
-  <element name='tag'>
-    <complexType>
-      <attribute name='name' type='ID' use='required' />
-    </complexType>
-  </element>
-
-  <element name='goto'>
-    <complexType>
-      <attribute name='cond' type='a:coditionType' use='optional' />
-      <attribute name='target' type='IDREF' use='required' />
-    </complexType>
-  </element>
-
-  <element name='call'>
-    <complexType>
-      <attribute name='target' type='IDREF' use='required' />
-    </complexType>
-  </element>
-
-  <element name='skip'>
-    <complexType>
-      <sequence>
-        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
-      </sequence>
-      <attribute name='cond' type='a:coditionType' use='optional' />
-    </complexType>
-  </element>
-
-  <element name='contractcall'>
-    <complexType>
-      <attribute name='flag' type='a:callFlagType' use='optional' default="All" />
-      <attribute name='method' type='Name' use='required' />
-      <attribute name='hash' type='a:predefinedHash160Literal' use='required'></attribute>
-    </complexType>
-  </element>
-
-  <element name='syscall'>
-    <complexType>
-      <attribute name='name' type='a:syscallType' use='required' />
-    </complexType>
-  </element>
-
-  <element name='instruction'>
-    <complexType>
-      <attribute name='operand' type='a:oprandType' use='optional' />
-      <attribute name='opcode' type='a:opcodeType' use='required' />
-    </complexType>
-  </element>
-
-  <element name='meta'>
-    <complexType>
-      <simpleContent>
-        <extension base="string">
-          <attribute name='compiler' type='a:MaxLen64String' use='optional' default="neoml" />
-          <attribute name='src' type='string' use='optional' default="neo.org" />
-          <attribute name='name' type='string' use='required' />
-        </extension>
-      </simpleContent>
-    </complexType>
-  </element>
-
-  <element name='std'>
-    <complexType>
-      <annotation>
-        <documentation>
-          Supported Standard: NEP-17 NEP-11 ...
-        </documentation>
-      </annotation>
-      <attribute name='std' type='a:nepStd' use='required' />
-    </complexType>
-  </element>
-
-  <group name="anyElement">
-    <choice>
-      <element ref='a:lazy' />
-      <element ref='a:literal' />
-      <element ref='a:nop' />
-      <element ref='a:tag' />
-      <element ref='a:goto' />
-      <element ref='a:skip' />
-      <element ref='a:if' />
-      <element ref='a:unless' />
-      <element ref='a:contractcall' />
-      <element ref='a:call' />
-      <element ref='a:dowhile' />
-      <element ref='a:while' />
-      <element ref='a:syscall' />
-      <element ref='a:instruction' />
-      <element ref='a:func' />
-    </choice>
-  </group>
+  <!-- specific types -->
   <complexType name="empty" />
   <complexType name="any">
     <sequence minOccurs="0" maxOccurs="unbounded">
@@ -176,66 +177,19 @@
       <maxLength value="64" />
     </restriction>
   </simpleType>
-  <simpleType name='literalCompoundType'>
+  <simpleType name='stdType'>
+    <union memberTypes="a:wellknownstd string" />
+  </simpleType>
+  <simpleType name='oprandType'>
     <restriction base='string'>
-      <enumeration value='array' />
-      <enumeration value='struct' />
-      <enumeration value='map' />
+      <pattern value="([0-9a-f][0-9a-f]){0,4}" />
     </restriction>
   </simpleType>
-  <simpleType name='literalType'>
-    <restriction base='string'>
-      <enumeration value='int' />
-      <enumeration value='string' />
-      <enumeration value='bytes' />
-      <enumeration value='bool' />
-      <enumeration value='null' />
-      <enumeration value='hash160' />
-      <enumeration value='hash256' />
-      <enumeration value='address' />
-      <enumeration value='publickey' />
-    </restriction>
-  </simpleType>
-  <simpleType name='unsupportedLiteralType'>
-    <restriction base='string'>
-      <enumeration value='any' />
-      <enumeration value='signature' />
-      <enumeration value='array' />
-      <enumeration value='map' />
-      <enumeration value='interopinterface' />
-      <enumeration value='void' />
-    </restriction>
-  </simpleType>
-  <simpleType name='fullLiteralType'>
-    <union memberTypes="a:literalType a:unsupportedLiteralType" />
-  </simpleType>
-  <simpleType name='callFlagType'>
-    <restriction base='string'>
-      <enumeration value='None' />
-      <enumeration value='ReadStates' />
-      <enumeration value='WriteStates' />
-      <enumeration value='States' />
-      <enumeration value='AllowCall' />
-      <enumeration value='ReadOnly' />
-      <enumeration value='AllowNotify' />
-      <enumeration value='All' />
-    </restriction>
-  </simpleType>
-  <simpleType name='coditionType'>
-    <restriction base='string'>
-      <enumeration value='eq' />
-      <enumeration value='ne' />
-      <enumeration value='le' />
-      <enumeration value='lt' />
-      <enumeration value='ge' />
-      <enumeration value='gt' />
-      <enumeration value='if' />
-      <enumeration value='ifnot' />
-    </restriction>
-  </simpleType>
+
+  <!-- literal types -->
   <simpleType name='intLiteral'>
     <restriction base='string'>
-      <pattern value="-*[0-9]{1,78}" />
+      <pattern value="-?[0-9]{1,78}" />
     </restriction>
   </simpleType>
   <simpleType name='bytesLiteral'>
@@ -249,16 +203,27 @@
       <enumeration value='false' />
     </restriction>
   </simpleType>
-  <simpleType name='someNepStd'>
+  <simpleType name='hash256Literal'>
     <restriction base='string'>
-      <enumeration value='NEP-11' />
-      <enumeration value='NEP-17' />
+      <pattern value="0x[0-9a-f]{64}" />
     </restriction>
   </simpleType>
-  <simpleType name='nepStd'>
-    <union memberTypes="a:someNepStd string" />
+  <simpleType name='addressLiteral'>
+    <restriction base='string'>
+      <pattern value="N[1-9A-HJ-NP-Za-km-z]{33}" />
+    </restriction>
   </simpleType>
-  <simpleType name="predefinedHash160Literal">
+  <simpleType name='publickeyLiteral'>
+    <restriction base='string'>
+      <pattern value="[0-9a-f]{66}" />
+    </restriction>
+  </simpleType>
+  <simpleType name='basichash160'>
+    <restriction base='string'>
+      <pattern value="0x[0-9a-f]{40}" />
+    </restriction>
+  </simpleType>
+  <simpleType name="hash160Literal">
     <annotation>
       <documentation>ContractManagement</documentation>
       <documentation>0xfffdc93764dbaddd97c48f252a53ea4643faa3fd</documentation>
@@ -283,11 +248,97 @@
       <documentation>NoBug</documentation>
       <documentation>0x54806765d451e2b0425072730d527d05fbfa9817</documentation>
     </annotation>
-    <union memberTypes="a:predefinedContracts a:hash160Literal" />
+    <union memberTypes="a:wellknowncontracts a:basichash160" />
   </simpleType>
-  <simpleType name="predefinedContracts">
 
-    <restriction base='a:hash160Literal'>
+  <!-- groups -->
+  <!-- literal group -->
+  <!-- any element group -->
+  <group name='literal'>
+    <choice>
+      <element ref='a:int' />
+      <element ref='a:bool' />
+      <element ref='a:string' />
+      <element ref='a:bytes' />
+      <element ref='a:null' />
+      <element ref='a:hash160' />
+      <element ref='a:hash256' />
+      <element ref='a:address' />
+      <element ref='a:publickey' />
+    </choice>
+  </group>
+  <group name="anyElement">
+    <choice>
+      <group ref='a:literal' />
+      <element ref='a:lazy' />
+      <element ref='a:nop' />
+      <element ref='a:tag' />
+      <element ref='a:goto' />
+      <element ref='a:skip' />
+      <element ref='a:if' />
+      <element ref='a:unless' />
+      <element ref='a:contractcall' />
+      <element ref='a:call' />
+      <element ref='a:dowhile' />
+      <element ref='a:syscall' />
+      <element ref='a:instruction' />
+      <element ref='a:func' />
+    </choice>
+  </group>
+
+  <!-- enumerations -->
+  <!-- well-known std type-->
+  <!-- literal compound type -->
+  <!-- literal type -->
+  <!-- call flag type -->
+  <!-- well-known contracts' address -->
+  <!-- condition type -->
+  <!-- syscall type -->
+  <!-- opcode type -->
+  <simpleType name='wellknownstd'>
+    <restriction base='string'>
+      <enumeration value='NEP-11' />
+      <enumeration value='NEP-17' />
+    </restriction>
+  </simpleType>
+  <simpleType name='literalCompoundType'>
+    <restriction base='string'>
+      <enumeration value='array' />
+      <enumeration value='struct' />
+      <enumeration value='map' />
+    </restriction>
+  </simpleType>
+  <simpleType name='literalType'>
+    <restriction base='string'>
+      <enumeration value='int' />
+      <enumeration value='string' />
+      <enumeration value='bytes' />
+      <enumeration value='bool' />
+      <enumeration value='hash160' />
+      <enumeration value='hash256' />
+      <enumeration value='publickey' />
+      <enumeration value='any' />
+      <enumeration value='signature' />
+      <enumeration value='array' />
+      <enumeration value='map' />
+      <enumeration value='interopinterface' />
+      <enumeration value='void' />
+    </restriction>
+  </simpleType>
+  <simpleType name='callFlagType'>
+    <restriction base='string'>
+      <enumeration value='None' />
+      <enumeration value='ReadStates' />
+      <enumeration value='WriteStates' />
+      <enumeration value='States' />
+      <enumeration value='AllowCall' />
+      <enumeration value='ReadOnly' />
+      <enumeration value='AllowNotify' />
+      <enumeration value='All' />
+    </restriction>
+  </simpleType>
+  <simpleType name="wellknowncontracts">
+    <restriction base='a:basichash160'>
       <enumeration value='0xfffdc93764dbaddd97c48f252a53ea4643faa3fd'>
         <annotation>
           <documentation>ContractManagement</documentation>
@@ -345,29 +396,16 @@
       </enumeration>
     </restriction>
   </simpleType>
-  <simpleType name='hash160Literal'>
+  <simpleType name='coditionType'>
     <restriction base='string'>
-      <pattern value="0x[0-9a-f]{40}" />
-    </restriction>
-  </simpleType>
-  <simpleType name='hash256Literal'>
-    <restriction base='string'>
-      <pattern value="0x[0-9a-f]{64}" />
-    </restriction>
-  </simpleType>
-  <simpleType name='addressLiteral'>
-    <restriction base='string'>
-      <pattern value="N[1-9A-HJ-NP-Za-km-z]{33}" />
-    </restriction>
-  </simpleType>
-  <simpleType name='publickeyLiteral'>
-    <restriction base='string'>
-      <pattern value="[0-9a-f]{66}" />
-    </restriction>
-  </simpleType>
-  <simpleType name='oprandType'>
-    <restriction base='string'>
-      <pattern value="([0-9a-f][0-9a-f]){0,4}" />
+      <enumeration value='eq' />
+      <enumeration value='ne' />
+      <enumeration value='le' />
+      <enumeration value='lt' />
+      <enumeration value='ge' />
+      <enumeration value='gt' />
+      <enumeration value='if' />
+      <enumeration value='ifnot' />
     </restriction>
   </simpleType>
   <simpleType name="syscallType">
