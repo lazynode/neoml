@@ -430,6 +430,7 @@
       <enumeration value='System.Runtime.GetInvocationCounter' />
       <enumeration value='System.Runtime.Log' />
       <enumeration value='System.Runtime.GetNotifications' />
+      <enumeration value='System.Runtime.Notify' />
       <enumeration value='System.Runtime.GasLeft' />
       <enumeration value='System.Runtime.BurnGas' />
       <enumeration value='System.Runtime.GetNetwork' />
