@@ -29,7 +29,6 @@ static class Assembly
     }
     public static void LITERAL(XElement node)
     {
-        node.Attributes().Count().print();
         var type = node.attr("type") ?? "null";
         var val = node.attr("val") ?? "";
         var child = new XElement("frag");
