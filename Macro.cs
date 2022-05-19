@@ -1,12 +1,4 @@
-﻿using System.Xml.Linq;
-using System.Reflection;
-using Neo;
-using Neo.VM;
-using Neo.IO;
-using Neo.SmartContract;
-using Neo.IO.Json;
-
-namespace neoml;
+﻿namespace neoml;
 static class Macro
 {
     public static void print<T>(this T val) => Console.WriteLine(val);

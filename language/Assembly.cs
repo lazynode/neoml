@@ -162,7 +162,7 @@ static class Assembly
     public static void DOWHILE(XElement node)
     {
         Guid start = Guid.NewGuid();
-        var tag = new XElement(ns + "tag").set("id", start).compile();
+        var tag = new XElement(ns + "tag").set("name", start).compile();
         var child = new XElement(ns + "goto").set("target", start).set("cond", "if").compile();
         node.RemoveAttributes();
         node.Name = "lazy";
@@ -173,10 +173,10 @@ static class Assembly
     {
         Guid start = Guid.NewGuid();
         Guid stop = Guid.NewGuid();
-        var tagstart = new XElement(ns + "tag").set("id", start).compile();
-        var tagstop = new XElement(ns + "tag").set("id", stop).compile();
-        var gotostart = new XElement(ns + "goto").set("target", start).set("cond", "if");
-        var gotostop = new XElement(ns + "goto").set("target", stop);
+        var tagstart = new XElement(ns + "tag").set("name", start).compile();
+        var tagstop = new XElement(ns + "tag").set("name", stop).compile();
+        var gotostart = new XElement(ns + "goto").set("target", start).set("cond", "if").compile();
+        var gotostop = new XElement(ns + "goto").set("target", stop).compile();
         node.AddFirst(tagstart);
         node.Add(tagstop);
         node.AddFirst(gotostop);
