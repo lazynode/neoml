@@ -8,10 +8,9 @@ using Neo.Wallets;
 
 namespace neoml.language;
 
-static class Assembly
+static partial class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
-    public static void LAZY(XElement node) => node.lazilize();
     public static void META(XElement node) => node.clone("meta", "name", "compiler", "src").addto(node);
     public static void STD(XElement node) => node.clone("std", "std").addto(node);
     public static void ARG(XElement node) => node.clone("arg", "name", "type").addto(node);
@@ -20,8 +19,8 @@ static class Assembly
 
     public static void INSTRUCTION(XElement node)
     {
-        var opcode = Enum.Parse<OpCode>((node.attr("opcode") ?? "NOP").ToUpper());
-        var operand = node.attr("operand")?.HexToBytes();
+        var opcode = Enum.Parse<OpCode>((node.a("opcode") ?? "NOP").ToUpper());
+        var operand = node.a("operand")?.HexToBytes();
         var child = new XElement("frag").set("data", new ScriptBuilder().Emit(opcode, operand).ToArray().ToHexString()).compile();
         node.RemoveAll();
         node.Name = "lazy";
@@ -29,8 +28,8 @@ static class Assembly
     }
     public static void LITERAL(XElement node)
     {
-        var type = node.attr("type") ?? "null";
-        var val = node.attr("val") ?? "";
+        var type = node.a("type") ?? "null";
+        var val = node.a("val") ?? "";
         var child = new XElement("frag");
         switch (type)
         {
@@ -71,8 +70,8 @@ static class Assembly
     }
     public static void COMPOUND(XElement node)
     {
-        var type = node.attr("type") ?? "array";
-        var size = node.attr("size")?.pipe(int.Parse) ?? node.Elements().Count();
+        var type = node.a("type") ?? "array";
+        var size = node.a("size")?.pipe(int.Parse) ?? node.Elements().Count();
         var items = new XElement("lazy", node.Descendants().Where(v => !v.Elements().Any()).Reverse().ToList()); // TODO
         var child = new XElement("frag");
         switch (type)
@@ -104,7 +103,7 @@ static class Assembly
     }
     public static void TAG(XElement node)
     {
-        var name = node.attr("name") ?? "";
+        var name = node.a("name") ?? "";
         var child = new XElement("lazy").set("id", name).compile();
         node.RemoveAll();
         node.Name = "lazy";
@@ -112,8 +111,8 @@ static class Assembly
     }
     public static void GOTO(XElement node)
     {
-        var cond = node.attr("cond") ?? "";
-        var target = node.attr("target") ?? "";
+        var cond = node.a("cond") ?? "";
+        var target = node.a("target") ?? "";
         var child = new XElement("goto").set("opcode", Enum.Parse<OpCode>($"JMP{cond.ToUpper()}_L").ToString()).set("target", target).compile();
         node.RemoveAll();
         node.Name = "lazy";
@@ -121,7 +120,7 @@ static class Assembly
     }
     public static void SKIP(XElement node)
     {
-        var cond = node.attr("cond") ?? "";
+        var cond = node.a("cond") ?? "";
         Guid end = Guid.NewGuid();
         var tag = new XElement(ns + "tag").set("name", end).compile();
         var child = new XElement(ns + "goto").set("target", end).set("cond", cond).compile();
@@ -144,7 +143,7 @@ static class Assembly
     }
     public static void SYSCALL(XElement node)
     {
-        var name = node.attr("name");
+        var name = node.a("name");
         var child = new XElement("frag").set("data", new ScriptBuilder().EmitSysCall(new InteropDescriptor() { Name = name }.Hash).ToArray().ToHexString()).compile();
         node.RemoveAll();
         node.Name = "lazy";
@@ -152,9 +151,9 @@ static class Assembly
     }
     public static void CONTRACTCALL(XElement node)
     {
-        var flag = Enum.Parse<CallFlags>(node.attr("flag") ?? "All");
-        var method = node.attr("method") ?? "";
-        var scripthash = UInt160.Parse(node.attr("hash"));
+        var flag = Enum.Parse<CallFlags>(node.a("flag") ?? "All");
+        var method = node.a("method") ?? "";
+        var scripthash = UInt160.Parse(node.a("hash"));
         var arg3 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(flag).ToArray().ToHexString()).compile();
         var arg2 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(method).ToArray().ToHexString()).compile();
         var arg1 = new XElement("frag").set("data", new ScriptBuilder().EmitPush(scripthash).ToArray().ToHexString()).compile();
@@ -168,7 +167,7 @@ static class Assembly
     }
     public static void CALL(XElement node)
     {
-        var target = node.attr("target") ?? "";
+        var target = node.a("target") ?? "";
         var child = new XElement("goto").set("opcode", "CALL_L").set("target", target).compile();
         node.RemoveAll();
         node.Name = "lazy";
