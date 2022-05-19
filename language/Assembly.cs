@@ -84,6 +84,32 @@ static class Assembly
         node.Name = "lazy";
         node.Add(child);
     }
+    public static void COMPOUND(XElement node)
+    {
+        var type = node.attr("type") ?? "array";
+        var size = node.attr("size")?.pipe(int.Parse) ?? node.Elements().Count();
+        var items = new XElement("lazy", node.Descendants().Where(v => !v.Elements().Any()).Reverse().ToList());
+        var child = new XElement("frag");
+        switch (type)
+        {
+            case "array":
+                child.set("data", new ScriptBuilder().EmitPush(size).Emit(OpCode.PACK).ToArray().ToHexString());
+                break;
+            case "map":
+                child.set("data", new ScriptBuilder().EmitPush(size).Emit(OpCode.PACKMAP).ToArray().ToHexString());
+                break;
+            case "struct":
+                child.set("data", new ScriptBuilder().EmitPush(size).Emit(OpCode.PACKSTRUCT).ToArray().ToHexString());
+                break;
+            default:
+                throw new Exception();
+        }
+        child.compile();
+        node.RemoveAll();
+        node.Name = "lazy";
+        node.Add(items);
+        node.Add(child);
+    }
     public static void NOP(XElement node)
     {
         var child = new XElement("frag").set("data", new ScriptBuilder().Emit(OpCode.NOP).ToArray().ToHexString()).compile();
@@ -172,18 +198,5 @@ static class Assembly
         node.Name = "lazy";
         node.AddFirst(tag);
         node.Add(child);
-    }
-    public static void WHILE(XElement node)
-    {
-        Guid start = Guid.NewGuid();
-        Guid stop = Guid.NewGuid();
-        var tagstart = new XElement(ns + "tag").set("name", start).compile();
-        var tagstop = new XElement(ns + "tag").set("name", stop).compile();
-        var gotostart = new XElement(ns + "goto").set("target", start).set("cond", "if").compile();
-        var gotostop = new XElement(ns + "goto").set("target", stop).compile();
-        node.AddFirst(tagstart);
-        node.Add(tagstop);
-        node.AddFirst(gotostop);
-        node.Add(gotostart);
     }
 }
