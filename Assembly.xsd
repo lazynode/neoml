@@ -49,11 +49,28 @@
   <element name='while' type='a:any' />
   <element name='nop' type='a:empty' />
 
-  <element name='literal'>
-    <!-- TODO: restrict val -->
+  <element name="compound">
     <complexType>
-      <attribute name='type' type='a:literalType' use='required' />
-      <attribute name='val' type='string' use='optional' />
+      <sequence>
+        <element ref='a:lazy' minOccurs="0" maxOccurs="unbounded" />
+        <element ref="a:literal" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+      <attribute name='type' type='a:literalCompoundType' use='optional' default="array" />
+      <attribute name='size' type='integer' use='optional' />
+    </complexType>
+  </element>
+
+  <element name='literal'>
+    <complexType>
+      <attribute name='int' type='a:intLiteral' use='optional' default="0" />
+      <attribute name='bool' type='a:boolLiteral' use='optional' default="false" />
+      <attribute name='string' type='string' use='optional' default="" />
+      <attribute name='bytes' type='a:bytesLiteral' use='optional' default="" />
+      <attribute name='null' type='string' use='optional' fixed="null" />
+      <attribute name='hash160' type='a:predefinedHash160Literal' use='optional' />
+      <attribute name='hash256' type='a:hash256Literal' use='optional' />
+      <attribute name='address' type='a:addressLiteral' use='optional' />
+      <attribute name='publickey' type='a:publickeyLiteral' use='optional' />
     </complexType>
   </element>
 
@@ -159,6 +176,13 @@
       <maxLength value="64" />
     </restriction>
   </simpleType>
+  <simpleType name='literalCompoundType'>
+    <restriction base='string'>
+      <enumeration value='array' />
+      <enumeration value='struct' />
+      <enumeration value='map' />
+    </restriction>
+  </simpleType>
   <simpleType name='literalType'>
     <restriction base='string'>
       <enumeration value='int' />
@@ -211,12 +235,12 @@
   </simpleType>
   <simpleType name='intLiteral'>
     <restriction base='string'>
-      <pattern value="[0-9]{1,78}" />
+      <pattern value="-*[0-9]{1,78}" />
     </restriction>
   </simpleType>
   <simpleType name='bytesLiteral'>
     <restriction base='string'>
-      <pattern value="([0-9a-f][0-9a-f])+" />
+      <pattern value="([0-9a-f][0-9a-f])*" />
     </restriction>
   </simpleType>
   <simpleType name='boolLiteral'>
