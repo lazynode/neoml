@@ -10,5 +10,6 @@ static class Compiler
     public static void selfcompile(this XElement node) => LANGUAGES[node.Name.NamespaceName.ToUpper()].GetMethod(node.Name.LocalName.ToUpper())!.Invoke(null, new object?[] { node });
     public static XElement set(this XElement node, XName name, object? val) => node.with(v => v.SetAttributeValue(name, val));
     public static string? attr(this XElement node, XName name) => node.Attribute(name)?.Value;
-    public static IEnumerable<XElement> leaves(this XElement node) => node.compile().Descendants().Where(v => !v.Elements().Any());
+    public static XElement root(this XElement node) => node.Parent is null ? node : node.Parent.root();
+    public static XElement leftest(this XElement node) => node.Elements().Any() ? node.Elements().First().leftest() : node;
 }

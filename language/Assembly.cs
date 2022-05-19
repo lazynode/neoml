@@ -88,7 +88,7 @@ static class Assembly
     {
         var type = node.attr("type") ?? "array";
         var size = node.attr("size")?.pipe(int.Parse) ?? node.Elements().Count();
-        var items = new XElement("lazy", node.Descendants().Where(v => !v.Elements().Any()).Reverse().ToList());
+        var items = new XElement("lazy", node.Descendants().Where(v => !v.Elements().Any()).Reverse().ToList()); // TODO
         var child = new XElement("frag");
         switch (type)
         {
