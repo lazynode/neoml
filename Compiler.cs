@@ -13,8 +13,8 @@ static class Compiler
     public static XElement root(this XElement x) => x.Parent is null ? x : x.Parent.root();
     public static XElement leftest(this XElement x) => x.Elements().Any() ? x.Elements().First().leftest() : x;
     public static IEnumerable<XElement> filter(this XElement x, string name) => x.DescendantsAndSelf().Where(v => v.Name.LocalName == name);
-    public static XElement lazilize(this XElement x) => x.with(v => v.RemoveAll()).with(v => v.Name = "lazy");
-    public static XElement lazy(this XElement x) => x.with(v => v.RemoveAttributes()).with(v => v.Name = "lazy");
+    public static XElement lazilize(this XElement x, string tag = "lazy") => x.with(v => v.RemoveAll()).with(v => v.Name = tag);
+    public static XElement lazy(this XElement x, string tag = "lazy") => x.with(v => v.RemoveAttributes()).with(v => v.Name = tag);
     public static XElement clone(this XElement x, XName tag, params string[] attrs) => attrs.Aggregate(new XElement(tag), (n, v) => n.set(v, x.a(v)));
     public static void addto(this XElement x, XElement parent) => parent.with(v => v.lazilize()).Add(x);
 }

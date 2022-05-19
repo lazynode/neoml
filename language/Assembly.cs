@@ -10,12 +10,11 @@ namespace neoml.language;
 
 static partial class Assembly
 {
-    public static XNamespace ns = nameof(Assembly);
-    public static void META(XElement node) => node.clone("meta", "name", "compiler", "src").addto(node);
-    public static void STD(XElement node) => node.clone("std", "std").addto(node);
-    public static void ARG(XElement node) => node.clone("arg", "name", "type").addto(node);
-    public static void FUNC(XElement node) => node.clone("func", "name", "return", "safe").addto(node);
-    public static void EVENT(XElement node) => node.clone("event", "name").addto(node);
+    private static void META(XElement x, string name, string src, string compiler) => x.lazilize("meta").set("name", name).set("src", src).set("compiler", compiler);
+    private static void STD(XElement x, string std) => x.lazilize("std").set("std", std);
+    private static void ARG(XElement x, string name, string type) => x.lazilize("arg").set("name", name).set("type", type);
+    private static void FUNC(XElement x, string name, string @return, bool safe) => x.lazilize("func").set("name", name).set("return", @return).set("safe", safe);
+    private static void EVENT(XElement x, string name) => x.lazilize("event").set("name", name);
 
     public static void INSTRUCTION(XElement node)
     {
