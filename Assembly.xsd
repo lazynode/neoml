@@ -56,7 +56,7 @@
       <sequence>
         <element ref='a:meta' minOccurs="0" />
         <element ref='a:std' minOccurs="0" maxOccurs="unbounded" />
-        <element ref='a:evt' minOccurs="0" maxOccurs="unbounded" />
+        <element ref='a:event' minOccurs="0" maxOccurs="unbounded" />
         <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
       </sequence>
       <attribute name='bytecode' type='string' use='optional' />
@@ -97,7 +97,7 @@
       <attribute name='std' type='a:stdType' use='required' />
     </complexType>
   </element>
-  <element name='evt'>
+  <element name='event'>
     <complexType>
       <sequence minOccurs="0" maxOccurs="unbounded">
         <element ref="a:arg" />
