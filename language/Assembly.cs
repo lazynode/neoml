@@ -11,7 +11,11 @@ namespace neoml.language;
 static class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
-    public static void LAZY(XElement node) { }
+    public static void LAZY(XElement node)
+    {
+        node.RemoveAttributes();
+        node.Name = "lazy";
+    }
     public static void META(XElement node)
     {
         var compiler = node.attr("compiler");
