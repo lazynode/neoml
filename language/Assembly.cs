@@ -9,11 +9,11 @@ namespace neoml.language;
 static partial class Assembly
 {
     public static void lazy(XElement x) => x.lazy();
-    private static void meta(XElement x, string name, string src, string compiler) => x.lazilize("meta").set("name", name).set("src", src).set("compiler", compiler);
+    private static void meta(XElement x, string name, string src, string compiler, string value) => x.lazilize("meta").set("name", name).set("src", src).set("compiler", compiler).Value=value;
     private static void std(XElement x, string std) => x.lazilize("std").set("std", std);
     private static void arg(XElement x, string name, string type) => x.lazilize("arg").set("name", name).set("type", type);
     private static void func(XElement x, string name, string @return, bool safe) => x.lazy("func").set("name", name).set("return", @return).set("safe", safe);
-    private static void @event(XElement x, string name) => x.lazilize("event").set("name", name);
+    private static void @event(XElement x, string name) => x.lazy("event").set("name", name);
     private static void instruction(XElement node, OpCode opcode, byte[]? operand) => node.lazilize("frag").set("data", opcode.hex(operand));
     private static void @int(XElement node, BigInteger val) => node.lazilize("frag").set("data", val.push());
     private static void @string(XElement node, string val) => node.lazilize("frag").set("data", val.push());
