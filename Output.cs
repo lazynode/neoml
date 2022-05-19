@@ -10,6 +10,9 @@ static class Output
 {
     public static Dictionary<string, string> TYPEFIX = new() { { "int", "Integer" }, { "integer", "Integer" }, { "Integer", "Integer" }, { "bool", "Boolean" }, { "boolean", "Boolean" }, { "Boolean", "Boolean" }, { "null", "Any" }, { "any", "Any" }, { "Any", "Any" }, { "bytes", "ByteArray" }, { "bytearray", "ByteArray" }, { "ByteArray", "ByteArray" }, { "string", "String" }, { "String", "String" }, { "Hash160", "Hash160" }, { "hash160", "Hash160" }, { "Hash256", "Hash256" }, { "hash256", "Hash256" }, { "publickey", "PublicKey" }, { "PublicKey", "PublicKey" }, { "signature", "Signature" }, { "Signature", "Signature" }, { "array", "Array" }, { "Array", "Array" }, { "map", "Map" }, { "Map", "Map" }, { "interopinterface", "InteropInterface" }, { "InteropInterface", "InteropInterface" }, { "void", "Void" }, { "Void", "Void" } };
     public static string fix(this string type) => TYPEFIX[type];
+    public static byte[] bytes(this OpCode opcode, byte[]? operand = null) => new ScriptBuilder().Emit(opcode, operand).ToArray();
+    public static string hex(this OpCode opcode, byte[]? operand = null) => opcode.bytes(operand).ToHexString();
+    public static string push<T>(this T val) => new ScriptBuilder().EmitPush(val).ToArray().ToHexString();
     public static byte[] finalize(this XElement x) => x.DescendantsAndSelf().Aggregate(Enumerable.Empty<byte>(), (sb, v) => v.withassert(v.Name.NamespaceName.Length == 0).emit(sb)).ToArray();
     public static string meta(this XElement x, string key) => x.filter("meta").SingleOrDefault()?.a(key)!;
     public static JString[] supportedstandards(this XElement x) => x.filter("std").Select(v => (JString)v.a("std")!).ToArray();

@@ -10,63 +10,20 @@ namespace neoml.language;
 
 static partial class Assembly
 {
-    private static void META(XElement x, string name, string src, string compiler) => x.lazilize("meta").set("name", name).set("src", src).set("compiler", compiler);
-    private static void STD(XElement x, string std) => x.lazilize("std").set("std", std);
-    private static void ARG(XElement x, string name, string type) => x.lazilize("arg").set("name", name).set("type", type);
-    private static void FUNC(XElement x, string name, string @return, bool safe) => x.lazilize("func").set("name", name).set("return", @return).set("safe", safe);
-    private static void EVENT(XElement x, string name) => x.lazilize("event").set("name", name);
-
-    public static void INSTRUCTION(XElement node)
-    {
-        var opcode = Enum.Parse<OpCode>((node.a("opcode") ?? "NOP").ToUpper());
-        var operand = node.a("operand")?.HexToBytes();
-        var child = new XElement("frag").set("data", new ScriptBuilder().Emit(opcode, operand).ToArray().ToHexString()).compile();
-        node.RemoveAll();
-        node.Name = "lazy";
-        node.Add(child);
-    }
-    public static void LITERAL(XElement node)
-    {
-        var type = node.a("type") ?? "null";
-        var val = node.a("val") ?? "";
-        var child = new XElement("frag");
-        switch (type)
-        {
-            case "int":
-                child.set("data", new ScriptBuilder().EmitPush(BigInteger.Parse(val)).ToArray().ToHexString());
-                break;
-            case "string":
-                child.set("data", new ScriptBuilder().EmitPush(val).ToArray().ToHexString());
-                break;
-            case "bytes":
-                child.set("data", new ScriptBuilder().EmitPush(val.HexToBytes()).ToArray().ToHexString());
-                break;
-            case "bool":
-                child.set("data", new ScriptBuilder().EmitPush(bool.Parse(val)).ToArray().ToHexString());
-                break;
-            case "null":
-                child.set("data", new ScriptBuilder().Emit(OpCode.PUSHNULL).ToArray().ToHexString());
-                break;
-            case "hash160":
-                child.set("data", new ScriptBuilder().EmitPush(UInt160.Parse(val)).ToArray().ToHexString());
-                break;
-            case "hash256":
-                child.set("data", new ScriptBuilder().EmitPush(UInt256.Parse(val)).ToArray().ToHexString());
-                break;
-            case "address":
-                child.set("data", new ScriptBuilder().EmitPush(val.ToScriptHash(ProtocolSettings.Default.AddressVersion)).ToArray().ToHexString());
-                break;
-            case "publickey":
-                child.set("data", new ScriptBuilder().EmitPush(((ECPoint.Parse(val, ECCurve.Secp256r1)).EncodePoint(true))).ToArray().ToHexString());
-                break;
-            default:
-                throw new Exception();
-        }
-        child.compile();
-        node.RemoveAll();
-        node.Name = "lazy";
-        node.Add(child);
-    }
+    public static void lazy(XElement x) => x.lazy();
+    private static void meta(XElement x, string name, string src, string compiler) => x.lazilize("meta").set("name", name).set("src", src).set("compiler", compiler);
+    private static void std(XElement x, string std) => x.lazilize("std").set("std", std);
+    private static void arg(XElement x, string name, string type) => x.lazilize("arg").set("name", name).set("type", type);
+    private static void func(XElement x, string name, string @return, bool safe) => x.lazilize("func").set("name", name).set("return", @return).set("safe", safe);
+    private static void @event(XElement x, string name) => x.lazilize("event").set("name", name);
+    private static void instruction(XElement node, OpCode opcode, byte[]? operand) => node.lazilize("frag").set("data", opcode.hex(operand));
+    private static void @int(XElement node, BigInteger val) => node.lazilize("frag").set("data", val.push());
+    private static void @string(XElement node, string val) => node.lazilize("frag").set("data", val.push());
+    private static void bytes(XElement node, byte[] val) => node.lazilize("frag").set("data", val.push());
+    private static void @bool(XElement node, bool val) => node.lazilize("frag").set("data", val.push());
+    private static void @null(XElement node) => node.lazilize("frag").set("data", OpCode.PUSHNULL.hex());
+    private static void hash160(XElement node, UInt160 val) => node.lazilize("frag").set("data", val.push());
+    private static void hash256(XElement node, UInt256 val) => node.lazilize("frag").set("data", val.push());
     public static void COMPOUND(XElement node)
     {
         var type = node.a("type") ?? "array";
