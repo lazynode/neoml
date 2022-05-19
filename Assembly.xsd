@@ -118,6 +118,7 @@
       <sequence>
         <element ref='a:lazy' minOccurs="0" maxOccurs="unbounded" />
         <group ref="a:literal" minOccurs="0" maxOccurs="unbounded" />
+        <element ref="a:compound" minOccurs="0" maxOccurs="unbounded" />
       </sequence>
       <attribute name='type' type='a:literalCompoundType' use='optional' default="array" />
       <attribute name='size' type='integer' use='optional' />
@@ -154,7 +155,7 @@
       <attribute name='val' type='a:hash256Literal' use='required' />
     </complexType>
   </element>
-  <element name='address'>
+  <!-- <element name='address'>
     <complexType>
       <attribute name='val' type='a:addressLiteral' use='required' />
     </complexType>
@@ -163,7 +164,7 @@
     <complexType>
       <attribute name='val' type='a:publickeyLiteral' use='required' />
     </complexType>
-  </element>
+  </element> -->
 
   <!-- specific types -->
   <complexType name="empty" />
@@ -208,7 +209,7 @@
       <pattern value="0x[0-9a-f]{64}" />
     </restriction>
   </simpleType>
-  <simpleType name='addressLiteral'>
+  <!-- <simpleType name='addressLiteral'>
     <restriction base='string'>
       <pattern value="N[1-9A-HJ-NP-Za-km-z]{33}" />
     </restriction>
@@ -217,7 +218,7 @@
     <restriction base='string'>
       <pattern value="[0-9a-f]{66}" />
     </restriction>
-  </simpleType>
+  </simpleType> -->
   <simpleType name='basichash160'>
     <restriction base='string'>
       <pattern value="0x[0-9a-f]{40}" />
@@ -263,8 +264,8 @@
       <element ref='a:null' />
       <element ref='a:hash160' />
       <element ref='a:hash256' />
-      <element ref='a:address' />
-      <element ref='a:publickey' />
+      <!-- <element ref='a:address' />
+      <element ref='a:publickey' /> -->
     </choice>
   </group>
   <group name="anyElement">
