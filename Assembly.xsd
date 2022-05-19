@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version='1.0'?>
 
 <schema xmlns='http://www.w3.org/2001/XMLSchema' targetNamespace='Assembly' xmlns:a='Assembly'>
   
@@ -26,14 +26,14 @@
   <element name='skip'>
     <complexType>
       <sequence>
-        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
+        <group ref='a:anyElement' minOccurs='0' maxOccurs='unbounded' />
       </sequence>
       <attribute name='cond' type='a:coditionType' use='optional' />
     </complexType>
   </element>
   <element name='contractcall'>
     <complexType>
-      <attribute name='flag' type='a:callFlagType' use='optional' default="All" />
+      <attribute name='flag' type='a:callFlagType' use='optional' default='All' />
       <attribute name='method' type='Name' use='required' />
       <attribute name='hash' type='a:hash160Literal' use='required'></attribute>
     </complexType>
@@ -54,10 +54,10 @@
   <element name='lazy'>
     <complexType>
       <sequence>
-        <element ref='a:meta' minOccurs="0" />
-        <element ref='a:std' minOccurs="0" maxOccurs="unbounded" />
-        <element ref='a:event' minOccurs="0" maxOccurs="unbounded" />
-        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
+        <element ref='a:meta' minOccurs='0' maxOccurs='1' />
+        <element ref='a:std' minOccurs='0' maxOccurs='unbounded' />
+        <element ref='a:event' minOccurs='0' maxOccurs='unbounded' />
+        <group ref='a:anyElement' minOccurs='0' maxOccurs='unbounded' />
       </sequence>
       <attribute name='bytecode' type='string' use='optional' />
       <attribute name='result' type='string' use='optional' />
@@ -66,8 +66,8 @@
   <element name='func'>
     <complexType>
       <sequence>
-        <element ref='a:arg' minOccurs="0" maxOccurs="unbounded" />
-        <group ref="a:anyElement" minOccurs="0" maxOccurs="unbounded" />
+        <element ref='a:arg' minOccurs='0' maxOccurs='unbounded' />
+        <group ref='a:anyElement' minOccurs='0' maxOccurs='unbounded' />
       </sequence>
       <attribute name='name' type='Name' use='required' />
       <attribute name='safe' type='a:boolLiteral' use='optional' />
@@ -79,9 +79,9 @@
   <element name='meta'>
     <complexType>
       <simpleContent>
-        <extension base="string">
-          <attribute name='compiler' type='a:MaxLen64String' use='optional' default="neoml" />
-          <attribute name='src' type='string' use='optional' default="neo.org" />
+        <extension base='string'>
+          <attribute name='compiler' type='a:MaxLen64String' use='optional' default='neoml' />
+          <attribute name='src' type='string' use='optional' default='neo.org' />
           <attribute name='name' type='Name' use='required' />
         </extension>
       </simpleContent>
@@ -99,13 +99,13 @@
   </element>
   <element name='event'>
     <complexType>
-      <sequence minOccurs="0" maxOccurs="unbounded">
-        <element ref="a:arg" />
+      <sequence minOccurs='0' maxOccurs='unbounded'>
+        <element ref='a:arg' />
       </sequence>
       <attribute name='name' type='Name' use='required' />
     </complexType>
   </element>
-  <element name="arg">
+  <element name='arg'>
     <complexType>
       <attribute name='name' type='Name' use='required' />
       <attribute name='type' type='a:literalType' use='required' />
@@ -113,38 +113,38 @@
   </element>
 
   <!-- literal elements -->
-  <element name="compound">
+  <element name='compound'>
     <complexType>
       <sequence>
-        <element ref='a:lazy' minOccurs="0" maxOccurs="unbounded" />
-        <group ref="a:literal" minOccurs="0" maxOccurs="unbounded" />
-        <element ref="a:compound" minOccurs="0" maxOccurs="unbounded" />
+        <element ref='a:lazy' minOccurs='0' maxOccurs='unbounded' />
+        <group ref='a:literal' minOccurs='0' maxOccurs='unbounded' />
+        <element ref='a:compound' minOccurs='0' maxOccurs='unbounded' />
       </sequence>
-      <attribute name='type' type='a:literalCompoundType' use='optional' default="array" />
+      <attribute name='type' type='a:literalCompoundType' use='optional' default='array' />
       <attribute name='size' type='integer' use='optional' />
     </complexType>
   </element>
   <element name='int'>
     <complexType>
-      <attribute name='val' type='a:intLiteral' use='optional' default="0" />
+      <attribute name='val' type='a:intLiteral' use='required' />
     </complexType>
   </element>
   <element name='bool'>
     <complexType>
-      <attribute name='val' type='a:boolLiteral' use='optional' default="false" />
+      <attribute name='val' type='a:boolLiteral' use='optional' default='false' />
     </complexType>
   </element>
   <element name='string'>
     <complexType>
-      <attribute name='val' type='string' use='optional' default="" />
+      <attribute name='val' type='string' use='required' />
     </complexType>
   </element>
   <element name='bytes'>
     <complexType>
-      <attribute name='val' type='a:bytesLiteral' use='optional' default="" />
+      <attribute name='val' type='a:bytesLiteral' use='required' />
     </complexType>
   </element>
-  <element name='null' type="a:empty" />
+  <element name='null' type='a:empty' />
   <element name='hash160'>
     <complexType>
       <attribute name='val' type='a:hash160Literal' use='required' />
@@ -167,35 +167,35 @@
   </element> -->
 
   <!-- specific types -->
-  <complexType name="empty" />
-  <complexType name="any">
-    <sequence minOccurs="0" maxOccurs="unbounded">
-      <group ref="a:anyElement" />
+  <complexType name='empty' />
+  <complexType name='any'>
+    <sequence minOccurs='0' maxOccurs='unbounded'>
+      <group ref='a:anyElement' />
     </sequence>
   </complexType>
-  <simpleType name="MaxLen64String">
-    <restriction base="string">
-      <maxLength value="64" />
+  <simpleType name='MaxLen64String'>
+    <restriction base='string'>
+      <maxLength value='64' />
     </restriction>
   </simpleType>
   <simpleType name='stdType'>
-    <union memberTypes="a:wellknownstd string" />
+    <union memberTypes='a:wellknownstd string' />
   </simpleType>
   <simpleType name='oprandType'>
     <restriction base='string'>
-      <pattern value="([0-9a-f][0-9a-f]){0,4}" />
+      <pattern value='([0-9a-f][0-9a-f]){0,4}' />
     </restriction>
   </simpleType>
 
   <!-- literal types -->
   <simpleType name='intLiteral'>
     <restriction base='string'>
-      <pattern value="-?[0-9]{1,78}" />
+      <pattern value='-?[0-9]{1,78}' />
     </restriction>
   </simpleType>
   <simpleType name='bytesLiteral'>
     <restriction base='string'>
-      <pattern value="([0-9a-f][0-9a-f])*" />
+      <pattern value='([0-9a-f][0-9a-f])*' />
     </restriction>
   </simpleType>
   <simpleType name='boolLiteral'>
@@ -206,25 +206,25 @@
   </simpleType>
   <simpleType name='hash256Literal'>
     <restriction base='string'>
-      <pattern value="0x[0-9a-f]{64}" />
+      <pattern value='0x[0-9a-f]{64}' />
     </restriction>
   </simpleType>
   <!-- <simpleType name='addressLiteral'>
     <restriction base='string'>
-      <pattern value="N[1-9A-HJ-NP-Za-km-z]{33}" />
+      <pattern value='N[1-9A-HJ-NP-Za-km-z]{33}' />
     </restriction>
   </simpleType>
   <simpleType name='publickeyLiteral'>
     <restriction base='string'>
-      <pattern value="[0-9a-f]{66}" />
+      <pattern value='[0-9a-f]{66}' />
     </restriction>
   </simpleType> -->
   <simpleType name='basichash160'>
     <restriction base='string'>
-      <pattern value="0x[0-9a-f]{40}" />
+      <pattern value='0x[0-9a-f]{40}' />
     </restriction>
   </simpleType>
-  <simpleType name="hash160Literal">
+  <simpleType name='hash160Literal'>
     <annotation>
       <documentation>ContractManagement</documentation>
       <documentation>0xfffdc93764dbaddd97c48f252a53ea4643faa3fd</documentation>
@@ -249,7 +249,7 @@
       <documentation>NoBug</documentation>
       <documentation>0x54806765d451e2b0425072730d527d05fbfa9817</documentation>
     </annotation>
-    <union memberTypes="a:wellknowncontracts a:basichash160" />
+    <union memberTypes='a:wellknowncontracts a:basichash160' />
   </simpleType>
 
   <!-- groups -->
@@ -268,7 +268,7 @@
       <element ref='a:publickey' /> -->
     </choice>
   </group>
-  <group name="anyElement">
+  <group name='anyElement'>
     <choice>
       <group ref='a:literal' />
       <element ref='a:lazy' />
@@ -338,7 +338,7 @@
       <enumeration value='All' />
     </restriction>
   </simpleType>
-  <simpleType name="wellknowncontracts">
+  <simpleType name='wellknowncontracts'>
     <restriction base='a:basichash160'>
       <enumeration value='0xfffdc93764dbaddd97c48f252a53ea4643faa3fd'>
         <annotation>
@@ -409,7 +409,7 @@
       <enumeration value='ifnot' />
     </restriction>
   </simpleType>
-  <simpleType name="syscallType">
+  <simpleType name='syscallType'>
     <restriction base='string'>
       <enumeration value='System.Contract.Call' />
       <enumeration value='System.Contract.GetCallFlags' />
@@ -444,7 +444,7 @@
       <enumeration value='System.Storage.Delete' />
     </restriction>
   </simpleType>
-  <simpleType name="opcodeType">
+  <simpleType name='opcodeType'>
     <restriction base='string'>
       <enumeration value='callt' />
       <enumeration value='append' />
