@@ -1,0 +1,11 @@
+<lazy xmlns="Assembly" bytecode="SUFr3qkoShKiJff///8=" result='{"type":"Integer","value":"92388001914167891181854960433610043192"}'>
+    <dowhile>
+        <!-- do {rand = getRandom();} -->
+        <instruction opcode="clear" />
+        <syscall name="System.Runtime.GetRandom" />
+        <!-- while (rand % 2 != 0) -->
+        <instruction opcode="dup" />
+        <int val="2" />
+        <instruction opcode="mod" />
+    </dowhile>
+</lazy>

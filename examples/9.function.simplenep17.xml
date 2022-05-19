@@ -1,0 +1,168 @@
+<lazy xmlns="Assembly" bytecode="DAVOZW9NTEAYQAIA4fUFQAE5BUARQA==" result='{"type":"ByteString","value":"TmVvTUw="}'>
+    <meta name="NeoML" src="https://github.com/lazynode/neoml/blob/test/examples/9.function.simplenep17.xml">
+        { "email": "lazynode@github.io", "author": "lazynode", "description": "A Simple Nep-17 Contract" }
+    </meta>
+    <std std="NEP-17" />
+    <event name="Transfer">
+        <arg name="from" type="hash160" />
+        <arg name="to" type="hash160" />
+        <arg name="amount" type="int" />
+    </event>
+
+    <func name="_deploy" safe="false" return="void">
+        <arg name="data" type="any" />
+        <arg name="update" type="bool" />
+
+        <instruction opcode="drop" />
+        <if>
+            <instruction opcode="ret" />
+        </if>
+
+        <!-- mint token to owner -->
+        <int val="100000000" />
+        <syscall name="System.Runtime.GetScriptContainer" />
+        <int val="3" />
+        <instruction opcode="pickitem" />
+        <syscall name="System.Storage.GetContext" />
+        <syscall name="System.Storage.Put" />
+
+        <null />
+        <int val="100000000" />
+        <lazy>
+            <syscall name="System.Runtime.GetScriptContainer" />
+            <int val="3" />
+            <instruction opcode="pickitem" />
+        </lazy>
+        <null />
+        <call target="postTransfer" />
+
+        <instruction opcode="ret" />
+    </func>
+
+    <func name="symbol" safe="true" return="string">
+        <string val="NeoML" />
+        <instruction opcode="ret" />
+    </func>
+
+    <func name="decimals" safe="true" return="int">
+        <int val="8" />
+        <instruction opcode="ret" />
+    </func>
+
+    <func name="totalSupply" safe="true" return="int">
+        <int val="100000000" />
+        <instruction opcode="ret" />
+    </func>
+
+    <func name="balanceOf" safe="true" return="int">
+        <arg name="owner" type="hash160" />
+        <tag name="balanceOf" />
+        <syscall name="System.Storage.GetContext" />
+        <syscall name="System.Storage.Get" />
+
+        <instruction opcode="dup" />
+        <instruction opcode="isnull" />
+        <if>
+            <instruction opcode="drop" />
+            <int val="0" />
+            <instruction opcode="ret" />
+        </if>
+
+        <instruction opcode="ret" />
+    </func>
+
+    <func name="transfer" safe="false" return="bool">
+        <arg name="from" type="hash160" />
+        <arg name="to" type="hash160" />
+        <arg name="amount" type="int" />
+        <arg name="data" type="any" />
+
+        <instruction opcode="initslot" operand="0004" />
+
+        <instruction opcode="ldarg0" />
+        <syscall name="System.Runtime.CheckWitness" />
+        <unless>
+            <bool val="false" />
+            <instruction opcode="ret" />
+        </unless>
+
+        <instruction opcode="ldarg2" />
+        <int val="0" />
+        <skip cond="ge">
+            <instruction opcode="abort" />
+        </skip>
+
+        <instruction opcode="ldarg0" />
+        <call target="balanceOf" />
+        <instruction opcode="ldarg2" />
+        <skip cond="ge">
+            <bool val="false" />
+            <instruction opcode="ret" />
+        </skip>
+
+        <instruction opcode="ldarg0" />
+        <call target="balanceOf" />
+        <instruction opcode="ldarg2" />
+        <instruction opcode="sub" />
+        <instruction opcode="ldarg0" />
+        <syscall name="System.Storage.GetContext" />
+        <syscall name="System.Storage.Put" />
+
+        <instruction opcode="ldarg1" />
+        <call target="balanceOf" />
+        <instruction opcode="ldarg2" />
+        <instruction opcode="add" />
+        <instruction opcode="ldarg1" />
+        <syscall name="System.Storage.GetContext" />
+        <syscall name="System.Storage.Put" />
+
+        <instruction opcode="ldarg3" />
+        <instruction opcode="ldarg2" />
+        <instruction opcode="ldarg1" />
+        <instruction opcode="ldarg0" />
+        <call target="postTransfer" />
+
+        <bool val="true" />
+        <instruction opcode="ret" />
+    </func>
+
+    <lazy>
+        <tag name="postTransfer" />
+        <instruction opcode="initslot" operand="0004" />
+
+        <instruction opcode="ldarg2" />
+        <instruction opcode="ldarg1" />
+        <instruction opcode="ldarg0" />
+        <int val="3" />
+        <instruction opcode="pack" />
+        <string val="Transfer" />
+        <syscall name="System.Runtime.Notify" />
+
+        <instruction opcode="ldarg1" />
+        <instruction opcode="isnull" />
+        <if>
+            <instruction opcode="ret" />
+        </if>
+
+        <instruction opcode="ldarg1" />
+        <int val="1" />
+        <instruction opcode="pack" />
+        <contractcall method="getContract" hash="0xfffdc93764dbaddd97c48f252a53ea4643faa3fd" />
+        <instruction opcode="isnull" />
+        <if>
+            <instruction opcode="ret" />
+        </if>
+
+        <instruction opcode="ldarg3" />
+        <instruction opcode="ldarg2" />
+        <instruction opcode="ldarg0" />
+        <int val="3" />
+        <instruction opcode="pack" />
+        <instruction opcode="push15" />
+        <string val="onNEP17Payment" />
+        <instruction opcode="ldarg1" />
+        <syscall name="System.Contract.Call" />
+
+        <instruction opcode="ret" />
+    </lazy>
+</lazy>

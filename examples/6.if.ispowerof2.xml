@@ -1,0 +1,21 @@
+<lazy xmlns="Assembly" bytecode="AYAAShGfkRCXJxUAAAAMDUlTX1BPV0VSX09GXzJADBFJU19OT1RfUE9XRVJfT0ZfMkA=" result='{"type":"ByteString","value":"SVNfUE9XRVJfT0ZfMg=="}'>
+    <!-- Tell me a number. I'll tell you if it's negative or not. -->
+    <int val="128" />
+
+    <instruction opcode="dup" />
+    <int val="1" />
+    <instruction opcode="sub" />
+    <instruction opcode="and" />
+
+    <int val="0" />
+    <instruction opcode="equal" />
+    <if>
+        <!-- if ((x-1)&x == 0) return "IS_POWER_OF_2"; -->
+        <string val="IS_POWER_OF_2" />
+        <instruction opcode="ret" />
+    </if>
+
+    <!-- return "IS_NOT_POWER_OF_2" -->
+    <string val="IS_NOT_POWER_OF_2" />
+    <instruction opcode="ret" />
+</lazy>

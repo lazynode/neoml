@@ -1,0 +1,5 @@
+<lazy xmlns="Assembly" bytecode="EhOe" result='{"type":"Integer","value":"5"}'>
+    <int val="2" />
+    <int val="3" />
+    <instruction opcode="add" />
+</lazy>
