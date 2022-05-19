@@ -12,4 +12,5 @@ static class Compiler
     public static string? attr(this XElement node, XName name) => node.Attribute(name)?.Value;
     public static XElement root(this XElement node) => node.Parent is null ? node : node.Parent.root();
     public static XElement leftest(this XElement node) => node.Elements().Any() ? node.Elements().First().leftest() : node;
+    public static IEnumerable<XElement> filter(this XElement node, string name) => node.DescendantsAndSelf().Where(v => v.Name.LocalName == name);
 }
