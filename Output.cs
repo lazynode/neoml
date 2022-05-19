@@ -9,7 +9,7 @@ namespace neoml;
 static class Output
 {
     public static Dictionary<string, string> TYPEFIX = new() { { "int", "Integer" }, { "integer", "Integer" }, { "Integer", "Integer" }, { "bool", "Boolean" }, { "boolean", "Boolean" }, { "Boolean", "Boolean" }, { "null", "Any" }, { "any", "Any" }, { "Any", "Any" }, { "bytes", "ByteArray" }, { "bytearray", "ByteArray" }, { "ByteArray", "ByteArray" }, { "string", "String" }, { "String", "String" }, { "Hash160", "Hash160" }, { "hash160", "Hash160" }, { "Hash256", "Hash256" }, { "hash256", "Hash256" }, { "publickey", "PublicKey" }, { "PublicKey", "PublicKey" }, { "signature", "Signature" }, { "Signature", "Signature" }, { "array", "Array" }, { "Array", "Array" }, { "map", "Map" }, { "Map", "Map" }, { "interopinterface", "InteropInterface" }, { "InteropInterface", "InteropInterface" }, { "void", "Void" }, { "Void", "Void" } };
-    public static byte[] finalize(this XElement x) => x.DescendantsAndSelf().Aggregate(Enumerable.Empty<byte>(), (sb, v) => sb.withassert(v.Name.NamespaceName.Length == 0).emit(v)).ToArray();
+    public static byte[] finalize(this XElement x) => x.DescendantsAndSelf().Aggregate(Enumerable.Empty<byte>(), (sb, v) => v.withassert(v.Name.NamespaceName.Length == 0).emit(sb)).ToArray();
     public static string meta(this XElement x, string key, string def = "") => x.filter("meta").SingleOrDefault()?.a(key) ?? def;
     public static JString[] supportedstandards(this XElement x) => x.filter("std").Select(v => (JString)v.a("std")!).ToArray();
     public static JObject abi(this XElement x) => new JObject { ["methods"] = x.filter("func").Select(v => v.func()).ToArray(), ["events"] = x.filter("event").Select(v => v.evt()).ToArray() };
@@ -23,24 +23,24 @@ static class Output
     public static MethodToken[] methodtokens(this XElement x) => new MethodToken[] { }; // TODO: IMPL
     public static byte[] nef(this XElement x) => new NefFile() { Compiler = x.meta("compiler", "neoml"), Source = x.meta("src"), Tokens = x.methodtokens(), Script = x.finalize() }.with(v => { v.CheckSum = NefFile.ComputeChecksum(v); }).ToArray();
     public static string manifest(this XElement x) => new JObject() { ["name"] = x.meta("name"), ["groups"] = new JArray(), ["features"] = new JObject(), ["supportedstandards"] = x.supportedstandards(), ["abi"] = x.abi(), ["permissions"] = x.permissions(), ["trusts"] = x.trusts(), ["extra"] = x.extra() }.ToString();
-    public static IEnumerable<byte> emit(this IEnumerable<byte> sb, XElement node)
+    public static IEnumerable<byte> emit(this XElement x, IEnumerable<byte> sb)
     {
-        switch (node.Name.LocalName)
+        switch (x.Name.LocalName)
         {
             case "frag":
-                return sb.Concat(node.a("data").HexToBytes());
+                return sb.Concat(x.a("data").HexToBytes());
             case "goto":
-                return sb.Concat(new ScriptBuilder().Emit(node.a("opcode")!.pipe(Enum.Parse<OpCode>), BitConverter.GetBytes(node.root().DescendantsAndSelf().Where(v => v.a("id") == node.a("target")).Single().position() - node.position())).ToArray());
+                return sb.Concat(new ScriptBuilder().Emit(x.a("opcode")!.pipe(Enum.Parse<OpCode>), BitConverter.GetBytes(x.root().DescendantsAndSelf().Where(v => v.a("id") == x.a("target")).Single().position() - x.position())).ToArray());
             default:
                 return sb;
         }
     }
-    public static int size(this XElement node)
+    public static int size(this XElement x)
     {
-        switch (node.Name.LocalName)
+        switch (x.Name.LocalName)
         {
             case "frag":
-                return node.a("data").HexToBytes().Length;
+                return x.a("data").HexToBytes().Length;
             case "goto":
                 return 5;
             default:
