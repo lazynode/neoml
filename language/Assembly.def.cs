@@ -12,6 +12,9 @@ static partial class Assembly
 {
     public static XNamespace ns = nameof(Assembly);
     public static void LAZY(XElement x) => lazy(x);
+    public static void TRY(XElement x) => @try(x);
+    public static void CATCH(XElement x) => @catch(x);
+    public static void FINALLY(XElement x) => @finally(x);
     public static void META(XElement x) => meta(x, x.a("name") ?? "contract", x.a("src") ?? "", x.a("compiler") ?? "neoml", x.Value);
     public static void STD(XElement x) => std(x, x.a("std")!);
     public static void ARG(XElement x) => arg(x, x.a("name")!, x.a("type")!.fix());

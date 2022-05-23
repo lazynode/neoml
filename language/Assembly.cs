@@ -9,6 +9,9 @@ namespace neoml.language;
 static partial class Assembly
 {
     public static void lazy(XElement x) => x.lazy();
+    private static void @try(XElement x) => x.lazy("try");
+    private static void @catch(XElement x) => x.lazy("catch");
+    private static void @finally(XElement x) => x.lazy("finally");
     private static void meta(XElement x, string name, string src, string compiler, string value) => x.lazilize("meta").set("name", name).set("src", src).set("compiler", compiler).Value=value;
     private static void std(XElement x, string std) => x.lazilize("std").set("std", std);
     private static void arg(XElement x, string name, string type) => x.lazilize("arg").set("name", name).set("type", type);
@@ -136,5 +139,40 @@ static partial class Assembly
         node.Name = "lazy";
         node.AddFirst(tag);
         node.Add(child);
+    }
+    public static void TRYCATCHFINALLY(XElement node)
+    {
+        var @try = node.Descendants().Where(v => v.Name.LocalName == "try").First();
+        var @catch = node.Descendants().Where(v => v.Name.LocalName == "catch");
+        var @finally = node.Descendants().Where(v => v.Name.LocalName == "finally");
+        if (@catch.Count() == 0 && @finally.Count() == 0) {
+            throw new Exception();
+        }
+        Guid catchpos = Guid.NewGuid();
+        Guid finallypos = Guid.NewGuid();
+        Guid end = Guid.NewGuid();
+
+        var child = new XElement("frag");
+        child.Add(@try);
+        child.Add(new XElement("__endtry").set("target", end));
+        if (@catch.Count() > 0) {
+            var catchstarttag = new XElement(ns + "tag").set("name", catchpos).compile();
+            child.Add(catchstarttag);
+            child.Add(@catch.First());
+            child.Add(new XElement("__endtry").set("target", end));
+        }
+        if (@finally.Count() > 0) {
+            var finallystarttag = new XElement(ns + "tag").set("name", finallypos).compile();
+            child.Add(finallystarttag);
+            child.Add(@finally.First());
+            child.Add(new XElement("instruction").set("opcode", "endfinally"));
+        }
+
+        node.RemoveAll();
+        node.Name = "lazy";
+        node.Add(new XElement("__try").set("catch", catchpos).set("finally", finallypos)); // add the catchOffset and finallyOffset as oprand, 0 stands for non-exist
+        node.Add(child);
+        var tag = new XElement(ns + "tag").set("name", end).compile();
+        node.Add(tag);
     }
 }

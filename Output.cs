@@ -4,6 +4,7 @@ using Neo.VM;
 using Neo.IO;
 using Neo.SmartContract;
 using Neo.IO.Json;
+using System.Linq;
 
 namespace neoml;
 static class Output
@@ -35,6 +36,10 @@ static class Output
                 return sb.Concat(x.a("data").HexToBytes());
             case "goto":
                 return sb.Concat(new ScriptBuilder().Emit(x.a("opcode")!.pipe(Enum.Parse<OpCode>), BitConverter.GetBytes(x.root().DescendantsAndSelf().Where(v => v.a("id") == x.a("target")).Single().position() - x.position())).ToArray());
+            case "__endtry":
+                return sb.Concat(new ScriptBuilder().Emit(OpCode.ENDTRY_L, BitConverter.GetBytes(x.root().DescendantsAndSelf().Where(v => v.a("id") == x.a("target")).Single().position() - x.position())).ToArray());
+            case "__try":
+                return sb.Concat(new ScriptBuilder().Emit(OpCode.TRY_L, BitConverter.GetBytes(x.root().DescendantsAndSelf().Where(v => v.a("id") == x.a("catch")).pipe(v => v.Any() ? v.Single().position() - x.position() : 0)).Concat(BitConverter.GetBytes(x.root().DescendantsAndSelf().Where(v => v.a("id") == x.a("finally")).pipe(v => v.Any() ? v.Single().position() - x.position() : 0))).ToArray()).ToArray());
             default:
                 return sb;
         }
@@ -46,6 +51,10 @@ static class Output
             case "frag":
                 return x.a("data").HexToBytes().Length;
             case "goto":
+                return 5;
+            case "__try":
+                return 9;
+            case "__endtry":
                 return 5;
             default:
                 return 0;
