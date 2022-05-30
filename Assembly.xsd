@@ -183,7 +183,7 @@
   </simpleType>
   <simpleType name='oprandType'>
     <restriction base='string'>
-      <pattern value='([0-9a-f][0-9a-f]){0,4}' />
+      <pattern value='([0-9a-fA-F][0-9a-fA-F])*' />
     </restriction>
   </simpleType>
 
@@ -195,7 +195,7 @@
   </simpleType>
   <simpleType name='bytesLiteral'>
     <restriction base='string'>
-      <pattern value='([0-9a-f][0-9a-f])*' />
+      <pattern value='([0-9a-fA-F][0-9a-fA-F])*' />
     </restriction>
   </simpleType>
   <simpleType name='boolLiteral'>
@@ -206,7 +206,7 @@
   </simpleType>
   <simpleType name='hash256Literal'>
     <restriction base='string'>
-      <pattern value='0x[0-9a-f]{64}' />
+      <pattern value='0x[0-9a-fA-F]{64}' />
     </restriction>
   </simpleType>
   <!-- <simpleType name='addressLiteral'>
@@ -216,12 +216,12 @@
   </simpleType>
   <simpleType name='publickeyLiteral'>
     <restriction base='string'>
-      <pattern value='[0-9a-f]{66}' />
+      <pattern value='[0-9a-fA-F]{66}' />
     </restriction>
   </simpleType> -->
   <simpleType name='basichash160'>
     <restriction base='string'>
-      <pattern value='0x[0-9a-f]{40}' />
+      <pattern value='0x[0-9a-fA-F]{40}' />
     </restriction>
   </simpleType>
   <simpleType name='hash160Literal'>
@@ -459,7 +459,7 @@
       <enumeration value='right' />
       <enumeration value='substr' />
       <enumeration value='call' />
-      <enumeration value='calll' />
+      <enumeration value='call_l' />
       <enumeration value='calla' />
       <enumeration value='newarray' />
       <enumeration value='newarrayt' />
@@ -524,28 +524,28 @@
       <enumeration value='sign' />
       <enumeration value='size' />
       <enumeration value='try' />
-      <enumeration value='tryl' />
+      <enumeration value='try_l' />
       <enumeration value='depth' />
       <enumeration value='drop' />
       <enumeration value='dup' />
       <enumeration value='isnull' />
       <enumeration value='istype' />
       <enumeration value='jmp' />
-      <enumeration value='jmpl' />
+      <enumeration value='jmp_l' />
       <enumeration value='jmpeq' />
-      <enumeration value='jmpeql' />
+      <enumeration value='jmpeq_l' />
       <enumeration value='jmpge' />
-      <enumeration value='jmpgel' />
+      <enumeration value='jmpge_l' />
       <enumeration value='jmpgt' />
-      <enumeration value='jmpgtl' />
+      <enumeration value='jmpgt_l' />
       <enumeration value='jmpif' />
-      <enumeration value='jmpifl' />
+      <enumeration value='jmpif_l' />
       <enumeration value='jmpifnot' />
-      <enumeration value='jmpifnotl' />
+      <enumeration value='jmpifnot_l' />
       <enumeration value='jmple' />
-      <enumeration value='jmplel' />
+      <enumeration value='jmple_l' />
       <enumeration value='jmplt' />
-      <enumeration value='jmpltl' />
+      <enumeration value='jmplt_l' />
       <enumeration value='jmpne' />
       <enumeration value='jmpne_l' />
       <enumeration value='ldarg' />
