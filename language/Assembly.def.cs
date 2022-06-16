@@ -14,8 +14,8 @@ static partial class Assembly
     public static void LAZY(XElement x) => lazy(x);
     public static void META(XElement x) => meta(x, x.a("name") ?? "contract", x.a("src") ?? "", x.a("compiler") ?? "neoml", x.Value);
     public static void STD(XElement x) => std(x, x.a("std")!);
-    public static void ARG(XElement x) => arg(x, x.a("name")!, x.a("type")!.fix());
-    public static void FUNC(XElement x) => func(x, x.a("name")!, x.a("return")!.fix(), x.a("safe")?.pipe(bool.Parse) ?? false);
+    public static void ARG(XElement x) => arg(x, x.a("name")!, x.a("type")!.fixtype());
+    public static void FUNC(XElement x) => func(x, x.a("name")!, x.a("return")!.fixtype(), x.a("safe")?.pipe(bool.Parse) ?? false);
     public static void EVENT(XElement x) => @event(x, x.a("name")!);
     public static void INSTRUCTION(XElement x) => instruction(x, x.a("opcode")!.ToUpper().pipe(Enum.Parse<OpCode>), x.a("operand")?.HexToBytes());
     public static void INT(XElement x) => @int(x, x.a("val")!.pipe(BigInteger.Parse));
