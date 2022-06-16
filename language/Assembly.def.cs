@@ -1,10 +1,7 @@
 using System.Numerics;
 using System.Xml.Linq;
 using Neo;
-using Neo.Cryptography.ECC;
-using Neo.SmartContract;
 using Neo.VM;
-using Neo.Wallets;
 
 namespace neoml.language;
 
